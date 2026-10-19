@@ -386,7 +386,50 @@ const walk = async (dir) => {
   return out
 }
 const allSrc = await walk(srcDir)
-const RUNTIME_IDS = new Set(['route-badge', 'layers-scrim', 'pick-bar', 'gps-note'])
+const RUNTIME_IDS = new Set([
+  'route-badge',
+  'layers-scrim',
+  'pick-bar',
+  'gps-note',
+  'dash-toast-banner',
+  'got-coords-val',
+  'got-ts-val',
+  'rep-lat-input',
+  'rep-lon-input',
+  'btn-mode-gps',
+  'btn-mode-custom',
+  'btn-recenter-origin-gps',
+  'btn-clear-all-reports',
+  'close-toast-btn',
+  'nav-custom-calc-btn',
+  'nav-origin-select',
+  'nav-dest-select',
+  'btn-use-live-gps-report',
+  'rep-preset-select',
+  'dropzone-input',
+  'remove-photo-btn',
+  'submit-hazard-report-btn',
+  'rep-title-input',
+  'rep-type-select',
+  'rep-depth-input',
+  'rep-notes-input',
+  'sync-weather-api-btn',
+  'dash-rain-slider',
+  'dash-rain-val-label',
+  'rain-slider',
+  'rain-val-label',
+  'landing-telemetry-weather',
+  'landing-telemetry-underpasses',
+  'landing-status-badge',
+  'btn-hero-launch-map',
+  'btn-hero-open-dash',
+  'btn-hero-sim-monsoon',
+  'btn-cta-launch-map',
+  'btn-cta-open-dash',
+  'intro-screen',
+  'intro-scroll-trigger-btn',
+  'hero',
+])
 
 const html = await readFile(join(ROOT, 'index.html'), 'utf8')
 const present = new Set([...html.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]))

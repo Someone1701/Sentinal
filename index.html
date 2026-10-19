@@ -13,14 +13,29 @@
 <link rel="apple-touch-icon" href="./logo.svg">
 </head>
 <body>
-  <div id="map" aria-label="Campus map"></div>
-
   <header id="bar">
     <button id="brand-btn" type="button" title="About &amp; data sources">
       <img class="mark" src="./logo.svg" width="28" height="28" alt="">
       <span class="word">VIT</span>
       <span class="place">Vellore</span>
     </button>
+
+    <!-- View Mode Switcher: Overview, Map, or Dashboard -->
+    <div id="view-mode-toggle" class="view-mode-group" role="group" aria-label="Application View Mode">
+      <button id="view-landing-btn" class="view-btn" type="button" data-view="landing" title="Sentinel Project Overview &amp; Features">
+        <svg class="view-btn-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="12 8 8 12 12 16 12 8"/><line x1="16" y1="12" x2="12" y2="12"/></svg>
+        <span class="view-btn-label">Overview</span>
+      </button>
+      <button id="view-map-btn" class="view-btn active" type="button" data-view="map" title="Interactive Campus Map">
+        <svg class="view-btn-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+        <span class="view-btn-label">Map View</span>
+      </button>
+      <button id="view-dash-btn" class="view-btn" type="button" data-view="dashboard" title="Campus Safety Dashboard">
+        <svg class="view-btn-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+        <span class="view-btn-label">Dashboard</span>
+      </button>
+    </div>
+
     <button id="open-search" type="button" aria-label="Search campus">
       <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true">
         <circle cx="7" cy="7" r="4.6" fill="none" stroke="currentColor" stroke-width="1.7"/>
@@ -38,6 +53,12 @@
       <span class="lbl">Layers</span>
       <span class="n"></span>
     </button>
+    <button id="disaster-btn" class="hazard-normal" type="button" aria-expanded="false" title="Campus Hazards &amp; Safety (Normal Conditions)">
+      <svg class="disaster-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span class="lbl">Hazards</span>
+      <span class="disaster-badge badge-normal" id="disaster-count-badge">0</span>
+    </button>
+
     <div id="basemap" role="group" aria-label="Basemap">
       <button id="map-btn" type="button" aria-pressed="false">Map</button>
       <button id="sat-btn" type="button" aria-pressed="true">Satellite</button>
@@ -46,19 +67,39 @@
     </div>
   </header>
 
-  <button id="locate-btn" type="button" aria-pressed="false" aria-label="Show my location" title="Show my location">
-    <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
-      <circle cx="10" cy="10" r="3.1" fill="none" stroke="currentColor" stroke-width="1.7"/>
-      <path d="M10 2.2v2.4M10 15.4v2.4M2.2 10h2.4M15.4 10h2.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
-    </svg>
-  </button>
+  <!-- Main Application Workspace -->
+  <div id="app-workspace" class="view-mode-map">
+    <!-- Sentinel Landing Page & Platform Overview -->
+    <section id="landing-viewport" class="landing-viewport" aria-label="Sentinel Project Overview &amp; Landing Page"></section>
 
-  <div id="dock">
-    <footer id="foot">
-      <a href="https://www.openstreetmap.org/relation/15931944" target="_blank" rel="noopener">
-        <span>VIT Vellore</span>
-      </a>
-    </footer>
+    <!-- Primary Operations Dashboard -->
+    <main id="primary-dashboard" aria-label="Sentinel Operations Dashboard"></main>
+
+    <!-- Map Viewport -->
+    <div id="map-viewport" aria-label="Campus Map Viewport">
+      <div id="map" aria-label="Campus map"></div>
+
+      <button id="locate-btn" type="button" aria-pressed="false" aria-label="Show my location" title="Show my location">
+        <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
+          <circle cx="10" cy="10" r="3.1" fill="none" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M10 2.2v2.4M10 15.4v2.4M2.2 10h2.4M15.4 10h2.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+      </button>
+
+      <div id="dock">
+        <footer id="foot">
+          <a href="https://www.openstreetmap.org/relation/15931944" target="_blank" rel="noopener">
+            <span>VIT Vellore</span>
+          </a>
+        </footer>
+      </div>
+
+      <div id="attrib">
+        <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap</a>
+        <span> · </span>
+        <a href="https://www.esri.com" target="_blank" rel="noopener">Tiles © Esri</a>
+      </div>
+    </div>
   </div>
 
   <nav id="layers" aria-label="Map layers">
@@ -71,13 +112,8 @@
     <div id="layer-chips"></div>
   </nav>
 
-  <div id="attrib">
-    <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap</a>
-    <span> · </span>
-    <a href="https://www.esri.com" target="_blank" rel="noopener">Tiles © Esri</a>
-  </div>
-
   <section id="panel" hidden aria-live="polite"></section>
+
 
   <div id="palette" hidden role="dialog" aria-modal="true" aria-label="Search campus">
     <div id="palette-box">

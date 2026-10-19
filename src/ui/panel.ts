@@ -68,6 +68,16 @@ export function initPanel(h: PanelHost) {
     if (near?.dataset.poi) { host.openPoi(near.dataset.poi); return }
     const hall = t.closest('[data-hall]') as HTMLElement | null
     if (hall?.dataset.hall) { host.openHall(hall.dataset.hall); return }
+    const copyCoord = t.closest('[data-copy-coord]') as HTMLElement | null
+    if (copyCoord?.dataset.copyCoord) {
+      navigator.clipboard?.writeText(copyCoord.dataset.copyCoord).then(() => {
+        const origText = copyCoord.innerHTML
+        copyCoord.innerHTML = 'Copied! ✓'
+        copyCoord.classList.add('copied')
+        setTimeout(() => { copyCoord.innerHTML = origText; copyCoord.classList.remove('copied') }, 1800)
+      }).catch(() => {})
+      return
+    }
     const r = t.closest('[data-route]') as HTMLElement | null
     if (r) host.routeTo(+r.dataset.lat!, +r.dataset.lon!, r.dataset.label!)
   })
@@ -241,6 +251,7 @@ export function showPoi(p: Poi, menus?: MessMenu[], find?: RoomFind) {
       ['Phone', p.phone ? `<a href="tel:${esc(p.phone)}">${esc(p.phone)}</a>` : undefined],
       ['Website', p.url ? `<a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.url.replace(/^https?:\/\//, '').slice(0, 34))}</a>` : undefined],
       ['Near', p.near ? esc(p.near) : undefined],
+      ['Coordinates', `<button type="button" class="copy-coord-btn" data-copy-coord="${p.lat.toFixed(5)}, ${p.lon.toFixed(5)}" title="Click to copy coordinates">${p.lat.toFixed(5)}, ${p.lon.toFixed(5)} <span style="opacity:0.7">📋</span></button>`],
     ]),
     p.floors?.length ? floorTable(p.floors, find) : '',
     p.desc && !p.floors?.length ? `<p class="p-note">${esc(p.desc)}</p>` : '',
@@ -370,3 +381,32 @@ export function showAbout(campus: Campus) {
 
   shell('VIT Vellore map', 'About & sources', body)
 }
+
+export function showCoordinatePlace(c: {
+  lat: number
+  lon: number
+  label?: string
+  filename?: string
+  altitude?: number
+}) {
+  const coordStr = `${c.lat.toFixed(5)}, ${c.lon.toFixed(5)}`
+  const title = c.filename ? `📷 ${c.filename}` : (c.label ?? `📍 ${coordStr}`)
+  const kind = c.filename ? 'Photo Location' : 'Coordinates'
+
+  const body = [
+    routeButtons(c.lat, c.lon, title),
+    kv([
+      ['Coordinates', `<button type="button" class="copy-coord-btn" data-copy-coord="${coordStr}" title="Click to copy coordinates">${coordStr} <span style="opacity:0.7">📋</span></button>`],
+      ['Altitude', c.altitude != null ? `${c.altitude} m` : undefined],
+      ['Source', c.filename ? 'EXIF GPS Metadata (extracted offline from image)' : 'Coordinate search / Pin'],
+    ]),
+    `<p class="p-note" style="margin-top:12px">
+      ${c.filename
+        ? 'Location was extracted offline in your browser from the photo\'s camera GPS metadata without uploading to any server.'
+        : 'Exact coordinate point. You can calculate walking or cycling directions to or from this spot.'}
+    </p>`,
+  ].join('')
+
+  shell(title, kind, body)
+}
+

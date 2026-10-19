@@ -121,4 +121,6 @@ export interface Route {
   steps: boolean
   indoor: boolean
   unpaved: boolean
+  edgeIndices?: number[]
 }
+

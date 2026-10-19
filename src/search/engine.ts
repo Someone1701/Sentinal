@@ -1,5 +1,6 @@
 import type { Campus, Faculty, MessMenu, Poi } from '../types'
 import { openNow } from './hours'
+import { parseCoordinates } from '../location/coordinates'
 
 /* ── documents ───────────────────────────────────────────────────────────── */
 
@@ -317,6 +318,25 @@ export class SearchIndex {
   }
 
   search(raw: string, limit = 40): Hit[] {
+    const coord = parseCoordinates(raw)
+    if (coord) {
+      return [{
+        kind: 'place',
+        id: `coord:${coord.lat.toFixed(5)},${coord.lon.toFixed(5)}`,
+        title: `📍 Coordinates: ${coord.formatted}`,
+        sub: coord.nearCampus
+          ? 'Location on campus · Press Enter to jump or Tab to route'
+          : 'Outside campus bounds · Press Enter to view on map',
+        hay: `${coord.lat} ${coord.lon} ${coord.formatted} coordinate`,
+        keys: ['coordinate', 'coordinates', 'lat', 'lon'],
+        lat: coord.lat,
+        lon: coord.lon,
+        score: 1200,
+        marks: [],
+        boost: 10,
+      }]
+    }
+
     const q = lower(raw.trim())
     if (!q) return []
     const qWords = words(q)

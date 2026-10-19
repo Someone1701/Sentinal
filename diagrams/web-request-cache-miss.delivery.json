@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "77bd425c-66dd-4379-82f4-16b5fe175e93",
+  "status": "current",
+  "command": "deliver",
+  "type": "sequence",
+  "input": "C:\\Users\\91990\\Desktop\\AI\\Sentinal\\diagrams\\web-request-cache-miss.sequence.json",
+  "output": "C:\\Users\\91990\\Desktop\\AI\\Sentinal\\diagrams\\web-request-cache-miss.html",
+  "specification": {
+    "sha256": "c15390849a74bbe7c0f7e3377bf9dfac10f25e0ac874007f13e0f3663269d1c9",
+    "bytes": 4979
+  },
+  "artifact": {
+    "sha256": "73d068036a67b49e2fb3564a051d7c540c088f21854e0b323804d5b8547b79ee",
+    "bytes": 756322
+  }
+}

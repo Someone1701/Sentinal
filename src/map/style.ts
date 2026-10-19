@@ -89,7 +89,11 @@ export function buildStyle(
       train: { type: 'geojson', data: { type: 'FeatureCollection', features: [] } },
       pois: { type: 'geojson', data: { type: 'FeatureCollection', features: [] } },
       route: { type: 'geojson', data: { type: 'FeatureCollection', features: [] } },
+      routeOrig: { type: 'geojson', data: { type: 'FeatureCollection', features: [] } },
+      hazards: { type: 'geojson', data: { type: 'FeatureCollection', features: [] } },
+      hazardLines: { type: 'geojson', data: { type: 'FeatureCollection', features: [] } },
       you: { type: 'geojson', data: { type: 'FeatureCollection', features: [] } },
+
     },
     layers: [
       { id: 'bg', type: 'background', paint: { 'background-color': C.bg } },
@@ -313,6 +317,72 @@ export function buildStyle(
       },
 
       {
+        id: 'hazard-zone-fill', type: 'fill', source: 'hazards',
+        paint: {
+          'fill-color': [
+            'case',
+            // ONLY show red (#ef4444) if it is flooding, confirmed closed, or depth >= 30cm
+            ['any', ['==', ['get', 'type'], 'flood'], ['==', ['get', 'status'], 'confirmed_closed'], ['>=', ['get', 'depth'], 30]],
+            '#ef4444',
+            // Show amber/caution only for waterlogging warning
+            ['any', ['==', ['get', 'type'], 'waterlogging'], ['==', ['get', 'severity'], 'warning']],
+            '#f59e0b',
+            '#3b82f6',
+          ],
+          'fill-opacity': [
+            'case',
+            ['any', ['==', ['get', 'type'], 'flood'], ['==', ['get', 'status'], 'confirmed_closed'], ['>=', ['get', 'depth'], 30]],
+            0.36,
+            0.2,
+          ],
+        },
+      },
+      {
+        id: 'hazard-zone-outline', type: 'line', source: 'hazards',
+        paint: {
+          'line-color': [
+            'case',
+            ['any', ['==', ['get', 'type'], 'flood'], ['==', ['get', 'status'], 'confirmed_closed'], ['>=', ['get', 'depth'], 30]],
+            '#dc2626',
+            ['any', ['==', ['get', 'type'], 'waterlogging'], ['==', ['get', 'severity'], 'warning']],
+            '#d97706',
+            '#2563eb',
+          ],
+          'line-width': [
+            'case',
+            ['any', ['==', ['get', 'type'], 'flood'], ['==', ['get', 'status'], 'confirmed_closed'], ['>=', ['get', 'depth'], 30]],
+            3.2,
+            2,
+          ],
+          'line-dasharray': [3, 2],
+        },
+      },
+      {
+        id: 'hazard-road-blocked', type: 'line', source: 'hazardLines',
+        layout: { 'line-cap': 'round', 'line-join': 'round' },
+        paint: {
+          'line-color': '#ef4444',
+          'line-width': 6,
+          'line-dasharray': [1.5, 1],
+        },
+      },
+
+      {
+        id: 'route-orig-halo', type: 'line', source: 'routeOrig',
+        layout: { 'line-cap': 'round', 'line-join': 'round' },
+        paint: { 'line-color': '#451a03', 'line-width': 7, 'line-opacity': 0.8 },
+      },
+      {
+        id: 'route-orig-line', type: 'line', source: 'routeOrig',
+        layout: { 'line-cap': 'round', 'line-join': 'round' },
+        paint: {
+          'line-color': '#f59e0b',
+          'line-width': 3.5,
+          'line-dasharray': [2, 2],
+        },
+      },
+
+      {
         id: 'route-halo', type: 'line', source: 'route',
         layout: { 'line-cap': 'round', 'line-join': 'round' },
         paint: { 'line-color': C.routeHalo, 'line-width': 9, 'line-opacity': 0.9 },
@@ -322,6 +392,7 @@ export function buildStyle(
         layout: { 'line-cap': 'round', 'line-join': 'round' },
         paint: { 'line-color': C.route, 'line-width': 4 },
       },
+
 
       // Street lamps read as a pool of light on the ground rather than a pin.
       // Three stacked blurred circles: a wide falloff, a tighter halo, and a

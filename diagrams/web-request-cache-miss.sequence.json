@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "Web Request: Cache Miss Flow",
+    "subtitle": "Cache-Aside Pattern: Browser -> API -> Redis (Miss) -> PostgreSQL -> Cache Fill -> 200 OK",
+    "output": "diagrams/web-request-cache-miss.html",
+    "viewBox": [1000, 600],
+    "column_fit": "spread",
+    "animation": "trace",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "cache-check",
+        "label": "1. Cache Miss",
+        "focus": ["api", "redis"],
+        "note": "API checks Redis, resulting in a cache miss"
+      },
+      {
+        "id": "db-fallback",
+        "label": "2. DB Fallback",
+        "focus": ["api", "postgres"],
+        "note": "API queries PostgreSQL for authoritative records"
+      },
+      {
+        "id": "cache-fill",
+        "label": "3. Cache Fill & Response",
+        "focus": ["browser", "api", "redis"],
+        "note": "API populates Redis with TTL and returns 200 OK"
+      }
+    ]
+  },
+  "participants": [
+    { "id": "browser", "type": "frontend", "label": "Browser", "sublabel": "client application" },
+    { "id": "api", "type": "backend", "label": "API Server", "sublabel": "Node / Express / Go" },
+    { "id": "redis", "type": "database", "label": "Redis", "sublabel": "in-memory cache" },
+    { "id": "postgres", "type": "database", "label": "PostgreSQL", "sublabel": "primary persistent DB" }
+  ],
+  "segments": [
+    { "from": 140, "to": 240, "label": "1. Request & Cache Check" },
+    { "from": 250, "to": 360, "label": "2. Cache Miss & Database Query" },
+    { "from": 370, "to": 480, "label": "3. Cache Fill & Response" }
+  ],
+  "messages": [
+    { "id": "req-api", "from": "browser", "to": "api", "y": 160, "label": "GET /api/data", "variant": "emphasis", "note": "Client sends HTTP GET request" },
+    { "id": "chk-cache", "from": "api", "to": "redis", "y": 195, "label": "GET key", "variant": "default", "note": "In-memory O(1) cache lookup" },
+    { "id": "cache-miss", "from": "redis", "to": "api", "y": 225, "label": "nil (cache miss)", "variant": "return", "note": "Key not found or expired TTL" },
+    { "id": "query-db", "from": "api", "to": "postgres", "y": 275, "label": "SELECT data WHERE id = ?", "variant": "emphasis", "note": "Fallback to relational store" },
+    { "id": "db-result", "from": "postgres", "to": "api", "y": 315, "label": "record / rows", "variant": "return", "note": "Authoritative dataset returned" },
+    { "id": "fill-cache", "from": "api", "to": "redis", "y": 385, "label": "SETEX key 3600 (fill cache)", "variant": "dashed", "note": "Populate Redis cache with TTL" },
+    { "id": "cache-ack", "from": "redis", "to": "api", "y": 415, "label": "OK", "variant": "return" },
+    { "id": "res-browser", "from": "api", "to": "browser", "y": 455, "label": "200 OK (data payload)", "variant": "return", "note": "Deliver payload back to user" }
+  ],
+  "activations": [
+    { "participant": "browser", "from": 155, "to": 460, "type": "frontend" },
+    { "participant": "api", "from": 160, "to": 455, "type": "backend" },
+    { "participant": "redis", "from": 190, "to": 230, "type": "database" },
+    { "participant": "postgres", "from": 270, "to": 320, "type": "database" },
+    { "participant": "redis", "from": 380, "to": 420, "type": "database" }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "1. Client Request & Cache Check",
+      "items": [
+        "Browser issues GET /api/data to the API Server",
+        "API performs an O(1) in-memory key lookup in Redis (GET cache:key)",
+        "Sub-millisecond lookup minimizes load on the relational database"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "2. Cache Miss Detection",
+      "items": [
+        "Redis keyspace returns nil (key not found or TTL expired)",
+        "API intercepts miss and initiates primary database query fallback",
+        "Client remains on hold while downstream systems resolve"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "3. PostgreSQL Query & Fetch",
+      "items": [
+        "API executes parameterized SELECT against PostgreSQL",
+        "PostgreSQL reads indexes/disk to retrieve authoritative rows",
+        "PostgreSQL streams result set back to the API connection pool"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "4. Cache Population & Return",
+      "items": [
+        "API executes SETEX cache:key 3600 to fill cache with TTL",
+        "Redis confirms write with OK; future requests become instant hits",
+        "API formats JSON response and delivers 200 OK to the browser"
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "System Architecture & Trade-Offs",
+      "items": [
+        "Pattern: Cache-Aside (Lazy Loading) keeps memory footprint lean and resilient",
+        "Cache Stampede: Guard hot expired keys via mutex locking or early probabilistic refresh",
+        "Resilience: If Redis is unavailable, API gracefully degrades to query PostgreSQL directly"
+      ]
+    }
+  ]
+}

@@ -9,8 +9,15 @@ import { startTrains } from './map/train'
 import { Router, humanEta, humanDistance, metresBetween } from './route/router'
 import { SearchIndex, type Hit } from './search/engine'
 import { initPalette, openPalette } from './ui/palette'
-import { initPanel, showAbout, showMess, showMessIndex, showPerson, showPoi, hidePanel, type RoomFind } from './ui/panel'
+import { initPanel, showAbout, showMess, showMessIndex, showPerson, showPoi, hidePanel, showCoordinatePlace, type RoomFind } from './ui/panel'
 import { hidePing, showPing } from './ui/ping'
+import { disasterService } from './disaster/service'
+import { initDisasterPanel } from './ui/disaster-panel'
+import { initDashboard, showDashboard } from './ui/dashboard'
+import { initLanding } from './ui/landing'
+
+
+
 import { pushRecent } from './ui/recents'
 import {
   accuracyRadiusPx,
@@ -43,6 +50,7 @@ async function start() {
   ])
 
   const router = new Router(graphData)
+  disasterService.setGraph(graphData)
   const byId = new Map(campus.pois.map((p) => [p.id, p]))
   const byName = new Map(campus.pois.map((p) => [p.name, p]))
 
@@ -117,6 +125,36 @@ async function start() {
     applyStyle()
   }
   satBtn.addEventListener('click', () => setSatellite(true))
+
+  /* ── view mode management (dashboard primary, map option) ─────────────── */
+
+  type ViewMode = 'landing' | 'dashboard' | 'map'
+  let currentViewMode: ViewMode = 'map'
+
+  function setViewMode(mode: ViewMode) {
+    currentViewMode = mode
+    document.body.setAttribute('data-view', mode)
+    const workspace = document.getElementById('app-workspace')
+    if (workspace) {
+      workspace.className = `view-mode-${mode}`
+    }
+
+    document.querySelectorAll<HTMLButtonElement>('[data-view]').forEach((btn) => {
+      const isAct = btn.dataset.view === mode
+      btn.classList.toggle('active', isAct)
+      btn.setAttribute('aria-pressed', String(isAct))
+    })
+
+    setTimeout(() => { map.resize() }, 50)
+    setTimeout(() => { map.resize() }, 200)
+  }
+
+  document.querySelectorAll<HTMLButtonElement>('[data-view]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const mode = btn.dataset.view as ViewMode
+      if (mode) setViewMode(mode)
+    })
+  })
 
   /* ── 3D view ──────────────────────────────────────────────────────────── */
 
@@ -335,6 +373,8 @@ async function start() {
     badge.hidden = true
     ;(map.getSource('route') as maplibregl.GeoJSONSource | undefined)
       ?.setData({ type: 'FeatureCollection', features: [] })
+    ;(map.getSource('routeOrig') as maplibregl.GeoJSONSource | undefined)
+      ?.setData({ type: 'FeatureCollection', features: [] })
   }
 
   function paintYou() {
@@ -360,17 +400,45 @@ async function start() {
     if (!target) return
     paintYou()
     const from = origin ?? campusCentreNode()
-    const r = router.route(from, target, profile)
-    const src = map.getSource('route') as maplibregl.GeoJSONSource | undefined
+    const dState = disasterService.getState()
+    const safetyRes = router.routeDisasterAware(from, target, profile, {
+      hazards: dState.hazards,
+      blockedEdges: dState.blockedEdges,
+      riskMultipliers: dState.riskMultipliers,
+    })
 
-    if (!r) {
+    const src = map.getSource('route') as maplibregl.GeoJSONSource | undefined
+    const srcOrig = map.getSource('routeOrig') as maplibregl.GeoJSONSource | undefined
+
+    if (!safetyRes) {
       lastRoute = null
       badge.hidden = false
       badge.innerHTML = `<span>No path found on the mapped network</span>
         <button class="x" data-clear aria-label="Clear route">&times;</button>`
       src?.setData({ type: 'FeatureCollection', features: [] })
+      srcOrig?.setData({ type: 'FeatureCollection', features: [] })
       return
     }
+
+    if (safetyRes.status === 'IMPASSABLE') {
+      lastRoute = null
+      badge.hidden = false
+      badge.innerHTML = `
+        <span class="route-status-tag status-blocked">⛔ All Routes Blocked</span>
+        <span class="via">${escapeHtml(safetyRes.explanation)}</span>
+        <button class="recalc-action-btn" data-recalc title="Check fresh hazards and recalculate">🔄 Recalculate</button>
+        <button class="x" data-clear aria-label="Clear route">&times;</button>`
+      if (safetyRes.originalRoute) {
+        srcOrig?.setData({
+          type: 'FeatureCollection',
+          features: [{ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: safetyRes.originalRoute.coords } }],
+        })
+      }
+      src?.setData({ type: 'FeatureCollection', features: [] })
+      return
+    }
+
+    const r = safetyRes.safeRoute!
     lastRoute = { seconds: r.seconds, metres: r.metres }
 
     let coords = r.coords
@@ -383,6 +451,15 @@ async function start() {
       type: 'FeatureCollection',
       features: [{ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: coords } }],
     })
+
+    if (safetyRes.status === 'HAZARD_AVOIDED' && safetyRes.originalRoute) {
+      srcOrig?.setData({
+        type: 'FeatureCollection',
+        features: [{ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: safetyRes.originalRoute.coords } }],
+      })
+    } else {
+      srcOrig?.setData({ type: 'FeatureCollection', features: [] })
+    }
 
     const notes = [
       r.steps ? 'steps' : '',
@@ -398,17 +475,28 @@ async function start() {
 
     const canSwap = !!(origin && target && origin.label !== 'you' && origin.label !== 'campus centre')
 
+    const statusBadgeHtml = safetyRes.status === 'HAZARD_AVOIDED'
+      ? `<span class="route-status-tag status-rerouted" title="${escapeHtml(safetyRes.explanation)}">🛡️ Rerouted: Hazard Avoided (+${humanDistance(safetyRes.distanceDeltaMetres)})</span>`
+      : `<span class="route-status-tag status-safe">✓ Path Safe</span>`
+
     badge.hidden = false
     badge.innerHTML = `
-      <span class="eta">${humanEta(r.seconds)}</span>
-      <span>${humanDistance(r.metres)}</span>
-      <span class="mode">
-        <button data-mode="foot" class="${profile === 'foot' ? 'on' : ''}">walk</button>
-        <button data-mode="bike" class="${profile === 'bike' ? 'on' : ''}">cycle</button>
-        ${canSwap ? `<button data-swap title="Swap start and destination">⇄</button>` : ''}
-      </span>
-      <span class="via">${fromLabel}to ${escapeHtml(target.label)}${notes ? ` · ${notes}` : ''}</span>
-      <button class="x" data-clear aria-label="Clear route">&times;</button>`
+      <div class="badge-row-main">
+        <span class="eta">${humanEta(r.seconds)}</span>
+        <span>${humanDistance(r.metres)}</span>
+        <span class="mode">
+          <button data-mode="foot" class="${profile === 'foot' ? 'on' : ''}">walk</button>
+          <button data-mode="bike" class="${profile === 'bike' ? 'on' : ''}">cycle</button>
+          ${canSwap ? `<button data-swap title="Swap start and destination">⇄</button>` : ''}
+        </span>
+        ${statusBadgeHtml}
+        <button class="recalc-action-btn" data-recalc title="Recalculate route against current flood alerts">🔄</button>
+        <button class="x" data-clear aria-label="Clear route">&times;</button>
+      </div>
+      <div class="via">
+        ${fromLabel}to ${escapeHtml(target.label)}${notes ? ` · ${notes}` : ''}
+        ${safetyRes.status === 'HAZARD_AVOIDED' ? `<div class="reroute-note">⚠️ ${escapeHtml(safetyRes.explanation)}</div>` : ''}
+      </div>`
 
     if (fit) {
       map.fitBounds(bounds(coords), { padding: routePadding(), maxZoom: 17.5 })
@@ -418,6 +506,7 @@ async function start() {
   badge.addEventListener('click', (e) => {
     const t = e.target as HTMLElement
     if (t.dataset.clear !== undefined) { clearRoute(); return }
+    if (t.dataset.recalc !== undefined || t.closest('[data-recalc]')) { drawRoute(false); return }
     if (t.dataset.mode) { profile = t.dataset.mode as Profile; drawRoute(false); return }
     if (t.dataset.swap !== undefined && origin && target) {
       const prevOrig = origin
@@ -428,6 +517,7 @@ async function start() {
       return
     }
   })
+
 
   function campusCentreNode() {
     return { lat: campus.meta.center[1], lon: campus.meta.center[0], label: 'campus centre' }
@@ -683,9 +773,20 @@ async function start() {
 
   function openHit(hit: Hit) {
     if (hit.run) { hit.run(); return }
-    if (hit.kind === 'place' && hit.poi) {
-      focusPoi(hit.poi, undefined, hit.floor && hit.room ? { floor: hit.floor, room: hit.room } : undefined)
-      return
+    if (currentViewMode === 'dashboard') {
+      setViewMode('map')
+    }
+    if (hit.kind === 'place') {
+      if (hit.poi) {
+        focusPoi(hit.poi, undefined, hit.floor && hit.room ? { floor: hit.floor, room: hit.room } : undefined)
+        return
+      }
+      if (hit.lat != null && hit.lon != null) {
+        map.easeTo({ center: [hit.lon, hit.lat], zoom: 17, duration: 520, offset: panelOffset() })
+        showPing(map, hit.lat, hit.lon)
+        showCoordinatePlace({ lat: hit.lat, lon: hit.lon, label: hit.title })
+        return
+      }
     }
     if (hit.kind === 'person' && hit.person) {
       const at = hit.person.at ? byName.get(hit.person.at) : undefined
@@ -706,6 +807,7 @@ async function start() {
       showMess(hit)
     }
   }
+
 
   function jumpPrp() {
     active.add('prp')
@@ -779,11 +881,157 @@ async function start() {
     routeTo: (hit) => { if (hit.lat != null) routeTo(hit.lat, hit.lon!, hit.title) },
   })
 
+  /* ── disaster monitoring ──────────────────────────────────────────────── */
+
+  initDisasterPanel({
+    map,
+    onRecalculateRoute: () => drawRoute(false),
+  })
+
+  initDashboard({
+    map,
+    router,
+    campus,
+    routeTo,
+    setRouteEndpoints: (from, to) => {
+      origin = from
+      target = to
+      drawRoute(true)
+    },
+    onRecalculateRoute: () => drawRoute(false),
+    switchView: setViewMode,
+  })
+
+  initLanding({
+    switchView: setViewMode,
+    routeTo: (lat, lon, label) => routeTo(lat, lon, label),
+    setRouteEndpoints: (from, to) => {
+      origin = from
+      target = to
+      drawRoute(true)
+    },
+    onSelectScenario: (scenario) => {
+      disasterService.setMode(scenario)
+    },
+  })
+
+  function refreshDisasterLayers() {
+    const state = disasterService.getState()
+    const badgeEl = document.getElementById('disaster-count-badge')
+    const disasterBtn = document.getElementById('disaster-btn')
+    if (badgeEl && disasterBtn) {
+      if (state.hazards.length === 0) {
+        disasterBtn.classList.remove('hazard-active')
+        disasterBtn.classList.add('hazard-normal')
+        badgeEl.textContent = '0'
+        badgeEl.className = 'disaster-badge badge-normal'
+        disasterBtn.title = 'Campus Hazards & Safety (Normal Conditions)'
+      } else {
+        disasterBtn.classList.remove('hazard-normal')
+        disasterBtn.classList.add('hazard-active')
+        badgeEl.textContent = String(state.hazards.length)
+        badgeEl.className = 'disaster-badge badge-active'
+        disasterBtn.title = `${state.hazards.length} Active Campus Hazards Reported`
+      }
+    }
+
+    const hazardFeatures: GeoJSON.Feature[] = state.hazards
+      .filter((h) => h.polygon && h.polygon.length > 2)
+      .map((h) => ({
+        type: 'Feature',
+        properties: {
+          id: h.id,
+          title: h.title,
+          severity: h.severity,
+          status: h.status,
+          type: h.type,
+          depth: h.waterDepthCm ?? 0,
+        },
+        geometry: {
+          type: 'Polygon',
+          coordinates: [h.polygon!],
+        },
+      }))
+
+    ;(map.getSource('hazards') as maplibregl.GeoJSONSource | undefined)?.setData({
+      type: 'FeatureCollection',
+      features: hazardFeatures,
+    })
+
+    const lineFeatures: GeoJSON.Feature[] = []
+    const NON_TUNNEL_MAIN_ROADS = new Set([645, 646, 647, 797, 870, 873, 881, 267])
+
+    for (const edgeIdx of state.blockedEdges) {
+      // 1. Exclude main campus roads that are not part of any underpass
+      if (NON_TUNNEL_MAIN_ROADS.has(edgeIdx)) continue
+
+      // 2. For TT tunnel, edge 204 extends 74m south into TT courtyard. The tunnel is strictly edge 492 under the rail line.
+      if (edgeIdx === 204) {
+        if (state.blockedEdges.has(492)) continue
+        lineFeatures.push({
+          type: 'Feature',
+          properties: { blocked: true },
+          geometry: {
+            type: 'LineString',
+            coordinates: [
+              [79.158332, 12.971257],
+              [79.158299, 12.97159],
+            ],
+          },
+        })
+        continue
+      }
+
+      const e = graphData.edges[edgeIdx]
+      if (e) {
+        const [a, b] = e
+        lineFeatures.push({
+          type: 'Feature',
+          properties: { blocked: true },
+          geometry: {
+            type: 'LineString',
+            coordinates: [
+              [graphData.lon[a]!, graphData.lat[a]!],
+              [graphData.lon[b]!, graphData.lat[b]!],
+            ],
+          },
+        })
+      }
+    }
+
+    ;(map.getSource('hazardLines') as maplibregl.GeoJSONSource | undefined)?.setData({
+      type: 'FeatureCollection',
+      features: lineFeatures,
+    })
+
+    if (target) drawRoute(false)
+  }
+
+  map.on('load', () => {
+    refreshDisasterLayers()
+  })
+
+  disasterService.subscribe(() => {
+    if (map.isStyleLoaded()) {
+      refreshDisasterLayers()
+    }
+  })
+
   /* ── chrome ───────────────────────────────────────────────────────────── */
 
   document.getElementById('brand-btn')!.addEventListener('click', () => showAbout(campus))
-  document.getElementById('go-mess')!.addEventListener('click', jumpMess)
-  document.getElementById('go-prp')!.addEventListener('click', jumpPrp)
+  document.getElementById('view-landing-btn')?.addEventListener('click', () => {
+    window.location.href = '/landing.html'
+  })
+  document.getElementById('go-mess')!.addEventListener('click', () => { setViewMode('map'); jumpMess() })
+  document.getElementById('go-prp')!.addEventListener('click', () => { setViewMode('map'); jumpPrp() })
+  document.getElementById('disaster-btn')?.addEventListener('click', () => {
+    setViewMode('dashboard')
+    showDashboard('tunnels')
+  })
+
+  // Set default view mode to map under normal conditions
+  setViewMode('map')
 
   // What is loaded is stated in the About panel; the counts used to live under
   // the wordmark but that element is gone.
@@ -792,9 +1040,11 @@ async function start() {
     `${campus.mess?.items.length ?? 0} menus — click for sources`
 
   document.addEventListener('keydown', (e) => {
-    if (e.key !== 'Escape' || !document.getElementById('palette')!.hidden) return
-    if (rail.classList.contains('open')) { closeLayers(); return }
-    hidePanel(); focusId = null; refreshPois()
+    if (e.key === 'Escape') {
+      if (!document.getElementById('palette')!.hidden) return
+      if (rail.classList.contains('open')) { closeLayers(); return }
+      hidePanel(); focusId = null; refreshPois()
+    }
   })
 
   // A style or asset failure otherwise leaves the boot overlay up forever, which
@@ -814,12 +1064,50 @@ async function start() {
     clearTimeout(bootTimer)
     refreshPois()
     boot.classList.add('gone')
-    // Deep link: ?q=… opens the palette pre-filled, ?id=… focuses a place.
+    setViewMode('map')
+
+    // Deep link: ?q=… opens the palette pre-filled, ?id=… focuses a place, ?view=dashboard/map sets mode, ?route=… plots route.
     const params = new URLSearchParams(location.search)
     const id = params.get('id')
     const q = params.get('q')
-    if (id && byId.has(id)) focusPoi(byId.get(id)!)
-    else if (q) openPalette(q)
+    const view = params.get('view') as ViewMode | null
+    const routeParam = params.get('route')
+    const focusParam = params.get('focus')
+    const hazardParam = params.get('hazard')
+
+    if (hazardParam === 'monsoon_flood') {
+      disasterService.setMode('monsoon_flood')
+    }
+
+    if (view === 'landing') {
+      window.location.href = '/landing.html'
+      return
+    }
+
+    if (view && (view === 'dashboard' || view === 'map')) {
+      setViewMode(view)
+    }
+
+    if (routeParam) {
+      const parts = routeParam.split(',')
+      if (parts.length >= 6) {
+        origin = { lat: +parts[0]!, lon: +parts[1]!, label: decodeURIComponent(parts[2]!) }
+        target = { lat: +parts[3]!, lon: +parts[4]!, label: decodeURIComponent(parts[5]!) }
+        setViewMode('map')
+        drawRoute(true)
+      }
+    } else if (focusParam) {
+      const [fLat, fLon] = focusParam.split(',').map(Number)
+      if (!isNaN(fLat!) && !isNaN(fLon!)) {
+        setViewMode('map')
+        map.easeTo({ center: [fLon!, fLat!], zoom: 17.5, duration: 800 })
+      }
+    } else if (id && byId.has(id)) {
+      setViewMode('map')
+      focusPoi(byId.get(id)!)
+    } else if (q) {
+      openPalette(q)
+    }
   })
 }
 

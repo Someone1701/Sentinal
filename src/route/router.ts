@@ -1,4 +1,5 @@
 import type { Graph, Profile, Route } from '../types'
+import type { HazardZone } from '../disaster/types'
 
 const R = 6371008.8
 const rad = (d: number) => (d * Math.PI) / 180
@@ -74,6 +75,10 @@ export class Router {
     from: { lat: number; lon: number },
     to: { lat: number; lon: number },
     profile: Profile,
+    safetyOpts?: {
+      blockedEdges?: Set<number>
+      edgeRiskMultipliers?: Map<number, number>
+    },
   ): Route | null {
     const start = this.nearest(from.lat, from.lon)
     const goal = this.nearest(to.lat, to.lon)
@@ -102,14 +107,24 @@ export class Router {
       for (let k = this.head[cur]!; k < this.head[cur + 1]!; k++) {
         const nb = this.to[k]!
         if (closed[nb]) continue
-        const e = this.edges[this.edgeOf[k]!]!
-        const step = e[costIdx] as number
-        if (step < 0) continue // profile cannot use this edge (e.g. bike in a corridor)
+        const eIdx = this.edgeOf[k]!
+
+        // Confirmed road closure / impassable flood barrier
+        if (safetyOpts?.blockedEdges?.has(eIdx)) continue
+
+        const e = this.edges[eIdx]!
+        const baseStep = e[costIdx] as number
+        if (baseStep < 0) continue // profile cannot use this edge (e.g. bike in a corridor)
+
+        // Apply environmental hazard risk penalty multiplier if applicable
+        const riskMult = safetyOpts?.edgeRiskMultipliers?.get(eIdx) ?? 1.0
+        const step = baseStep * riskMult
+
         const tentative = g[cur]! + step
         if (tentative >= g[nb]!) continue
         g[nb] = tentative
         cameFrom[nb] = cur
-        cameEdge[nb] = this.edgeOf[k]!
+        cameEdge[nb] = eIdx
         open.push(nb, tentative + h(nb))
       }
     }
@@ -117,12 +132,14 @@ export class Router {
     if (!isFinite(g[goal]!)) return null
 
     const coords: [number, number][] = []
+    const edgeIndices: number[] = []
     let metres = 0
     let steps = false, indoor = false, unpaved = false
     for (let at = goal; at !== -1; at = cameFrom[at]!) {
       coords.push([this.lon[at]!, this.lat[at]!])
       const ei = cameEdge[at]!
       if (ei >= 0) {
+        edgeIndices.push(ei)
         const e = this.edges[ei]!
         metres += e[2]
         if (e[5] & FLAG_STEPS) steps = true
@@ -131,6 +148,7 @@ export class Router {
       }
     }
     coords.reverse()
+    edgeIndices.reverse()
 
     // Walk in from the real endpoints, which sit off-network.
     const legIn = metresBetween(from.lat, from.lon, this.lat[start]!, this.lon[start]!)
@@ -142,12 +160,123 @@ export class Router {
     const walkSpeed = 1.35
     return {
       coords,
+      edgeIndices,
       metres: Math.round(metres + legIn + legOut),
       seconds: Math.round(g[goal]! + (legIn + legOut) / walkSpeed),
       steps, indoor, unpaved,
     }
   }
+
+  /**
+   * Disaster-Aware Intelligent Rerouting Engine:
+   * 1. Evaluates baseline shortest/fastest route.
+   * 2. Checks intersection with confirmed closures and environmental hazard zones.
+   * 3. If hazards encountered, recalculates safest alternative path avoiding blockages.
+   * 4. Quantifies distance/time delta and generates human-readable explanation.
+   */
+  routeDisasterAware(
+    from: { lat: number; lon: number },
+    to: { lat: number; lon: number },
+    profile: Profile,
+    safety: {
+      hazards: HazardZone[]
+      blockedEdges: Set<number>
+      riskMultipliers: Map<number, number>
+    },
+  ): {
+    status: 'SAFE' | 'HAZARD_AVOIDED' | 'IMPASSABLE'
+    originalRoute: Route | null
+    safeRoute: Route | null
+    hazardsEncountered: HazardZone[]
+    explanation: string
+    distanceDeltaMetres: number
+    timeDeltaSeconds: number
+  } | null {
+    // 1. Calculate baseline route without hazard constraints
+    const baseline = this.route(from, to, profile)
+    if (!baseline) return null
+
+    // If no hazards active anywhere on campus
+    if (!safety.hazards.length && !safety.blockedEdges.size) {
+      return {
+        status: 'SAFE',
+        originalRoute: null,
+        safeRoute: baseline,
+        hazardsEncountered: [],
+        explanation: 'Route is clear of reported hazards and road closures.',
+        distanceDeltaMetres: 0,
+        timeDeltaSeconds: 0,
+      }
+    }
+
+    // 2. Identify if baseline route traverses any blocked or waterlogged edges
+    const baselineEdges = new Set(baseline.edgeIndices ?? [])
+    const hitBlockedEdges: number[] = []
+    for (const bEdge of safety.blockedEdges) {
+      if (baselineEdges.has(bEdge)) hitBlockedEdges.push(bEdge)
+    }
+
+    const encounteredHazards = safety.hazards.filter((h) => {
+      const hitsBlocked = h.blockedEdges.some((e) => baselineEdges.has(e))
+      const hitsCaution = h.affectedEdges.some((e) => baselineEdges.has(e))
+      return hitsBlocked || hitsCaution
+    })
+
+    // If baseline route does NOT encounter any hazards
+    if (!hitBlockedEdges.length && !encounteredHazards.length) {
+      return {
+        status: 'SAFE',
+        originalRoute: null,
+        safeRoute: baseline,
+        hazardsEncountered: [],
+        explanation: 'Optimal route is clear. No active flood or disaster obstructions along this path.',
+        distanceDeltaMetres: 0,
+        timeDeltaSeconds: 0,
+      }
+    }
+
+    // 3. Recalculate safe route with confirmed closures blocked and risk weights applied
+    const safeRoute = this.route(from, to, profile, {
+      blockedEdges: safety.blockedEdges,
+      edgeRiskMultipliers: safety.riskMultipliers,
+    })
+
+    // 4. Case: All known routes are completely blocked
+    if (!safeRoute) {
+      return {
+        status: 'IMPASSABLE',
+        originalRoute: baseline,
+        safeRoute: null,
+        hazardsEncountered: encounteredHazards,
+        explanation:
+          'No verified accessible alternative route found. All connecting paths cross confirmed flood closures. Please seek high ground or shelter in place.',
+        distanceDeltaMetres: 0,
+        timeDeltaSeconds: 0,
+      }
+    }
+
+    // 5. Case: Safely rerouted
+    const distDelta = safeRoute.metres - baseline.metres
+    const timeDelta = safeRoute.seconds - baseline.seconds
+    const primaryHazard = encounteredHazards[0]
+    const hazardDesc = primaryHazard?.roadName
+      ? `${primaryHazard.roadName}`
+      : primaryHazard?.title ?? 'confirmed flood zone'
+
+    const explanation = `Original route blocked: avoided flooding on ${hazardDesc}. Recalculated safest bypass path (${humanDistance(distDelta)}, ${humanEta(timeDelta)}).`
+
+    return {
+      status: 'HAZARD_AVOIDED',
+      originalRoute: baseline,
+      safeRoute,
+      hazardsEncountered: encounteredHazards,
+      explanation,
+      distanceDeltaMetres: distDelta,
+      timeDeltaSeconds: timeDelta,
+    }
+  }
 }
+
 
 /** Min-heap keyed on f-score. Lazy deletion — stale entries are skipped by `closed`. */
 class BinaryHeap {
