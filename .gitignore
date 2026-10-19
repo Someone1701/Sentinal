@@ -9,3 +9,4 @@ public/data/
 
 # Browser-verification screenshots.
 .verify/
+.vercel
