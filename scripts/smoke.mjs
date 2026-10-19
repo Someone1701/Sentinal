@@ -431,7 +431,7 @@ const RUNTIME_IDS = new Set([
   'hero',
 ])
 
-const html = await readFile(join(ROOT, 'index.html'), 'utf8')
+const html = (await readFile(join(ROOT, 'index.html'), 'utf8')) + '\n' + (await readFile(join(ROOT, 'map.html'), 'utf8'))
 const present = new Set([...html.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]))
 
 const wanted = new Map()
@@ -446,7 +446,7 @@ for (const file of allSrc) {
 }
 
 const orphans = [...wanted].filter(([id]) => !present.has(id) && !RUNTIME_IDS.has(id))
-ok(orphans.length === 0, `index.html: all ${wanted.size} referenced ids exist`,
+ok(orphans.length === 0, `DOM contract: all ${wanted.size} referenced ids exist in HTML templates`,
    orphans.map(([id, f]) => `#${id} (${f})`).join(', '))
 
 await rm(TMP, { force: true })

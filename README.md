@@ -77,8 +77,8 @@ Campus chokepoints—notably the low-lying railway underpasses linking the main 
 │   ├── landing.css         # Tailwind directives & landing glassmorphic design
 │   ├── styles.css          # Main 3D map application styling
 │   └── main.ts             # Map application entrypoint
-├── landing.html            # Landing page with cinematic GSAP scroll intro
-├── index.html              # Core 3D interactive campus map application
+├── index.html              # Landing page with cinematic GSAP scroll intro
+├── map.html                # Core 3D interactive campus map application
 ├── tailwind.config.js      # Tailwind CSS v3 theme tokens & plugins
 ├── postcss.config.js       # PostCSS processor config
 ├── vercel.json             # Vercel deployment configuration

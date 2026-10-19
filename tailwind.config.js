@@ -1,8 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
-    './landing.html',
     './index.html',
+    './map.html',
+    './landing.html',
     './src/**/*.{js,ts,jsx,tsx,html,css}',
   ],
   darkMode: 'class',

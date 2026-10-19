@@ -20,17 +20,17 @@ function noCrossorigin(): Plugin {
 
 /**
  * Route rewrites for dev and preview servers:
- * - Root path `/` serves the cinematic intro landing page (`landing.html`).
- * - `/map` serves the campus map and disaster engine (`index.html`).
+ * - Root path `/` natively serves the cinematic intro landing page (`index.html`).
+ * - `/map` serves the campus map and disaster engine (`map.html`).
  */
 function routeRewrite(): Plugin {
   const rewriteMiddleware = (req: any, _res: any, next: () => void) => {
     const url = req.url ?? ''
     const [pathname, search] = url.split('?')
     const query = search ? `?${search}` : ''
-    if (pathname === '/' || pathname === '') {
-      req.url = `/landing.html${query}`
-    } else if (pathname === '/map') {
+    if (pathname === '/map') {
+      req.url = `/map.html${query}`
+    } else if (pathname === '/landing') {
       req.url = `/index.html${query}`
     }
     next()
@@ -60,8 +60,9 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
-        landing: resolve(__dirname, 'landing.html'),
+        map: resolve(__dirname, 'map.html'),
       },
     },
   },
 })
+

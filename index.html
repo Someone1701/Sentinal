@@ -1,143 +1,500 @@
-<!doctype html>
-<html lang="en" data-theme="dark">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#06070a">
-<title>VIT Map — Vellore campus</title>
-<meta name="description" content="VIT Vellore campus map: SJT, PRP classrooms, hostels, gates, mess menus, and one fast search.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="icon" type="image/svg+xml" href="./favicon.svg">
-<link rel="apple-touch-icon" href="./logo.svg">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sentinel — VIT Vellore Campus Map &amp; Flood Safety Engine</title>
+  <meta name="description" content="A community-engineered 3D campus map, search directory, and disaster-aware flood rerouting engine for VIT Vellore. Navigate 181 campus landmarks, explore daily mess menus, and steer clear of flooded railway underpasses.">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/src/landing.css">
 </head>
 <body>
-  <header id="bar">
-    <button id="brand-btn" type="button" title="About &amp; data sources">
-      <img class="mark" src="./logo.svg" width="28" height="28" alt="">
-      <span class="word">VIT</span>
-      <span class="place">Vellore</span>
-    </button>
 
-    <!-- View Mode Switcher: Overview, Map, or Dashboard -->
-    <div id="view-mode-toggle" class="view-mode-group" role="group" aria-label="Application View Mode">
-      <button id="view-landing-btn" class="view-btn" type="button" data-view="landing" title="Sentinel Project Overview &amp; Features">
-        <svg class="view-btn-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="12 8 8 12 12 16 12 8"/><line x1="16" y1="12" x2="12" y2="12"/></svg>
-        <span class="view-btn-label">Overview</span>
-      </button>
-      <button id="view-map-btn" class="view-btn active" type="button" data-view="map" title="Interactive Campus Map">
-        <svg class="view-btn-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
-        <span class="view-btn-label">Map View</span>
-      </button>
-      <button id="view-dash-btn" class="view-btn" type="button" data-view="dashboard" title="Campus Safety Dashboard">
-        <svg class="view-btn-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
-        <span class="view-btn-label">Dashboard</span>
-      </button>
+  <!-- ── PINNED CINEMATIC CURTAIN & ZOOM INTRO ────────────────────────── -->
+  <section id="intro-screen" class="intro-viewport" aria-label="Welcome to Sentinel">
+    <!-- Cosmic Ambient Glow Aura -->
+    <div class="intro-glow-aura">
+      <div class="w-[550px] h-[550px] rounded-full bg-gradient-to-tr from-cyan-500/20 via-indigo-500/25 to-transparent blur-[110px]"></div>
     </div>
 
-    <button id="open-search" type="button" aria-label="Search campus">
-      <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true">
-        <circle cx="7" cy="7" r="4.6" fill="none" stroke="currentColor" stroke-width="1.7"/>
-        <path d="M10.5 10.5 L14.2 14.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
-      </svg>
-      <span class="ph">SJT, PRP 327, Gate 11, mess…</span>
-      <kbd>⌘K</kbd>
-    </button>
-    <div id="jump" role="group" aria-label="Jump to">
-      <button id="go-mess" type="button" title="Jump to campus messes">Mess</button>
-      <button id="go-prp" type="button" title="Jump to PRP classrooms">PRP</button>
+    <!-- Top Coordinates & Status Bar -->
+    <div class="intro-top-bar flex items-center gap-3 pt-8 font-mono text-xs text-slate-400 tracking-widest uppercase z-10">
+      <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+      <span>VELLORE INSTITUTE OF TECHNOLOGY · 12.9698° N, 79.1559° E</span>
     </div>
-    <button id="layers-btn" type="button" aria-expanded="false" aria-controls="layers">
-      <span class="dots" aria-hidden="true"></span>
-      <span class="lbl">Layers</span>
-      <span class="n"></span>
-    </button>
-    <button id="disaster-btn" class="hazard-normal" type="button" aria-expanded="false" title="Campus Hazards &amp; Safety (Normal Conditions)">
-      <svg class="disaster-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      <span class="lbl">Hazards</span>
-      <span class="disaster-badge badge-normal" id="disaster-count-badge">0</span>
-    </button>
 
-    <div id="basemap" role="group" aria-label="Basemap">
-      <button id="map-btn" type="button" aria-pressed="false">Map</button>
-      <button id="sat-btn" type="button" aria-pressed="true">Satellite</button>
-      <span class="sep" aria-hidden="true"></span>
-      <button id="view3d-btn" type="button" aria-pressed="false" title="Tilt into 3D (right-drag or two fingers to rotate)">3D</button>
+    <!-- Central Cinematic Kinetic Emblem & Typography -->
+    <div class="intro-center-hero">
+      <!-- Luminous Emblem / Shield -->
+      <div class="intro-emblem">
+        <div class="intro-emblem-ring"></div>
+        <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-indigo-600/25 border border-cyan-400/40 flex items-center justify-center text-cyan-300 shadow-[0_0_35px_rgba(34,211,238,0.35)] relative">
+          <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <circle cx="12" cy="11" r="3"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Monospace Subtitle Kicker -->
+      <div class="intro-kicker">
+        CAMPUS INTELLIGENCE &amp; FLOOD RESILIENCE
+      </div>
+
+      <!-- Mega Title -->
+      <h1 class="intro-title">SENTINEL</h1>
+
+      <!-- Kinetic Tagline -->
+      <p class="intro-tagline">
+        Autonomous wayfinding, 3D architectural digital twins, and real-time flood safety across the Katpadi railway underpasses.
+      </p>
+    </div>
+
+    <!-- Bottom Scroll Indicator & Action -->
+    <div class="intro-bottom-action" id="intro-scroll-trigger-btn" role="button" tabindex="0" title="Click or scroll down to explore campus">
+      <span class="font-mono text-xs tracking-widest text-cyan-400 uppercase">Scroll to Enter Campus</span>
+      <div class="intro-mouse">
+        <div class="intro-mouse-wheel"></div>
+      </div>
+      <div class="text-slate-500 text-xs font-mono tracking-wider">or click to skip</div>
+    </div>
+  </section>
+
+  <!-- ── STICKY NAVIGATION BAR ─────────────────────────────────────────── -->
+  <header class="lp-navbar">
+    <div class="lp-container lp-nav-inner">
+      <a href="/" class="lp-brand">
+        <div class="lp-brand-logo">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="11" r="3"/></svg>
+        </div>
+        <div class="lp-brand-title">
+          <span class="lp-brand-name">SENTINEL</span>
+          <span class="lp-brand-sub">VIT VELLORE SPATIAL ENGINE</span>
+        </div>
+      </a>
+
+      <nav class="lp-nav-links" aria-label="Landing Page Navigation">
+        <a href="#hero" class="lp-nav-link">Overview</a>
+        <a href="#underpasses" class="lp-nav-link">4 Underpasses</a>
+        <a href="#features" class="lp-nav-link">Features</a>
+        <a href="#commutes" class="lp-nav-link">Commutes</a>
+      </nav>
+
+      <div class="lp-nav-actions">
+        <a href="/map?view=dashboard" class="btn-nav-outline">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+          <span>Dashboard</span>
+        </a>
+        <a href="/map" class="btn-nav-primary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+          <span>Open Map ➔</span>
+        </a>
+      </div>
     </div>
   </header>
 
-  <!-- Main Application Workspace -->
-  <div id="app-workspace" class="view-mode-map">
-    <!-- Sentinel Landing Page & Platform Overview -->
-    <section id="landing-viewport" class="landing-viewport" aria-label="Sentinel Project Overview &amp; Landing Page"></section>
+  <!-- ── HERO SECTION ─────────────────────────────────────────────────── -->
+  <section id="hero" class="lp-section hero-section">
+    <div class="hero-glow-orb"></div>
+    <div class="lp-container hero-grid-2col">
+      <div class="hero-content">
+        <!-- Live Campus Condition Pill -->
+        <div class="hero-status-pill">
+          <span class="hero-pulse-dot"></span>
+          <span>NORMAL CAMPUS CONDITIONS · ALL WALKWAYS DRY</span>
+        </div>
 
-    <!-- Primary Operations Dashboard -->
-    <main id="primary-dashboard" aria-label="Sentinel Operations Dashboard"></main>
+        <!-- Staggered Headline -->
+        <h1 class="hero-h1">
+          <span class="hero-line-reveal">Real-Time Campus Navigation</span>
+          <span class="hero-line-reveal">Built for <span class="hero-grad-cyan">Sunshine</span> &amp; <span class="hero-grad-purple">Cloudbursts</span>.</span>
+        </h1>
 
-    <!-- Map Viewport -->
-    <div id="map-viewport" aria-label="Campus Map Viewport">
-      <div id="map" aria-label="Campus map"></div>
+        <p class="hero-subtitle">
+          Navigate 181 campus landmarks, explore daily mess menus and 3D architectural models, and steer clear of flooded railway underpasses with automated topographic runoff prediction.
+        </p>
 
-      <button id="locate-btn" type="button" aria-pressed="false" aria-label="Show my location" title="Show my location">
-        <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
-          <circle cx="10" cy="10" r="3.1" fill="none" stroke="currentColor" stroke-width="1.7"/>
-          <path d="M10 2.2v2.4M10 15.4v2.4M2.2 10h2.4M15.4 10h2.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
-        </svg>
-      </button>
-
-      <div id="dock">
-        <footer id="foot">
-          <a href="https://www.openstreetmap.org/relation/15931944" target="_blank" rel="noopener">
-            <span>VIT Vellore</span>
+        <!-- CTA Buttons -->
+        <div class="hero-cta-cluster">
+          <a href="/map" class="btn-hero-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+            <span>Launch Interactive Map</span>
+            <span>➔</span>
           </a>
-        </footer>
+          <a href="/map?view=dashboard" class="btn-hero-secondary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+            <span>Safety Dashboard</span>
+          </a>
+          <a href="/map?hazard=monsoon_flood" class="btn-hero-danger" title="Simulate 35 mm/h Monsoon Downpour">
+            <span>🌧️</span>
+            <span>Simulate Monsoon Flood</span>
+          </a>
+        </div>
+
+        <!-- Telemetry HUD Bar -->
+        <div class="hero-telemetry-row">
+          <div class="telemetry-card">
+            <div class="tel-label">Weather Station</div>
+            <div class="tel-val" data-lp-telemetry-weather>24°C · Clear / Dry</div>
+            <div class="tel-sub">Open-Meteo Synoptic</div>
+          </div>
+          <div class="telemetry-card">
+            <div class="tel-label">Railway Underpasses</div>
+            <div class="tel-val val-safe">All 4 Open &amp; Safe</div>
+            <div class="tel-sub">Topographic Runoff Sensor</div>
+          </div>
+          <div class="telemetry-card">
+            <div class="tel-label">Offline Network</div>
+            <div class="tel-val val-cyan">966 Nodes · 1,096 Edges</div>
+            <div class="tel-sub">Client-Side Graph</div>
+          </div>
+          <div class="telemetry-card">
+            <div class="tel-label">Directory Index</div>
+            <div class="tel-val">1,363 Entities</div>
+            <div class="tel-sub">181 POIs · 1,148 Faculty</div>
+          </div>
+        </div>
       </div>
 
-      <div id="attrib">
-        <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap</a>
-        <span> · </span>
-        <a href="https://www.esri.com" target="_blank" rel="noopener">Tiles © Esri</a>
+      <!-- Hero Visual Twin Frame -->
+      <div class="hero-visual-box">
+        <div class="hero-frame">
+          <img src="/hero-visual.jpg" alt="Sentinel Campus Intelligence Digital Twin Visualization" class="hero-img" width="1200" height="675" loading="eager">
+          <div class="hero-frame-shine"></div>
+
+          <!-- Floating Route Card HUD -->
+          <div class="floating-hud hud-route">
+            <div class="hud-route-tag">
+              <span class="hero-pulse-dot"></span>
+              <span>A* Smart Reroute Engine</span>
+            </div>
+            <div class="hud-route-name">MH Hostels ➔ Silver Jubilee Tower</div>
+            <div class="hud-route-meta">
+              <span class="hud-tag-safe">🛡️ Bypassed Canal Flood</span>
+              <span>6 min · 480m via H&amp;J Tunnel</span>
+            </div>
+          </div>
+
+          <!-- Floating Spotlight HUD -->
+          <div class="floating-hud hud-search">
+            <div class="hud-search-row">
+              <span style="color: var(--lp-cyan); font-weight: bold;">›</span>
+              <span class="hud-search-text">prp 327 · sjt 101 · gate 11 · mess dinner</span>
+              <kbd>⌘K</kbd>
+            </div>
+            <div class="hud-search-sub">Sub-millisecond instant search over 1,363 entities</div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <nav id="layers" aria-label="Map layers">
-    <div class="layers-head">
-      <span class="t">Layers</span>
-      <button type="button" data-all>All</button>
-      <button type="button" data-none>None</button>
-      <button type="button" class="layers-close" aria-label="Close layers">&times;</button>
-    </div>
-    <div id="layer-chips"></div>
-  </nav>
-
-  <section id="panel" hidden aria-live="polite"></section>
-
-
-  <div id="palette" hidden role="dialog" aria-modal="true" aria-label="Search campus">
-    <div id="palette-box">
-      <div id="palette-input-row">
-        <span id="palette-glyph" aria-hidden="true">›</span>
-        <input id="palette-input" type="text" autocomplete="off" autocorrect="off"
-               autocapitalize="off" spellcheck="false" enterkeyhint="go"
-               placeholder="prp 327 · gate 11 · sjt · mess dinner · mh k"
-               aria-label="Search campus" aria-controls="palette-results" aria-expanded="true">
-        <span id="palette-timing" aria-hidden="true"></span>
-        <button id="palette-close" type="button" aria-label="Close search">&times;</button>
+  <!-- ── 4 RAILWAY UNDERPASSES (CHOKEPOINT MATRIX) ─────────────────────── -->
+  <section id="underpasses" class="lp-section lp-section-darker">
+    <div class="lp-container">
+      <div class="section-header text-center mx-auto">
+        <span class="section-kicker">CAMPUS TOPOGRAPHY &amp; RESILIENCE</span>
+        <h2 class="section-title">The 4 Railway Underpasses of VIT Vellore</h2>
+        <p class="section-desc">
+          The Katpadi railway line physically bisects VIT Vellore into <strong>Hostels (North)</strong> and <strong>Academic Blocks (South)</strong>. These 4 underpasses are the only pedestrian arteries connecting campus.
+        </p>
       </div>
-      <div id="palette-results" role="listbox"></div>
-      <footer id="palette-foot">
-        <span class="hint"><kbd>↑↓</kbd> move</span>
-        <span class="hint"><kbd>↵</kbd> open</span>
-        <span class="hint"><kbd>tab</kbd> route</span>
-        <a id="palette-repo" href="https://www.openstreetmap.org/relation/15931944" target="_blank" rel="noopener">edit OSM</a>
-        <span id="palette-count"></span>
-      </footer>
-    </div>
-  </div>
 
-  <div id="boot">finding your way around VIT…</div>
-  <script type="module" src="/src/main.ts"></script>
+      <div class="underpass-matrix-grid">
+        <!-- Chokepoint 1 -->
+        <div class="underpass-card">
+          <div>
+            <div class="up-card-header">
+              <span class="up-badge badge-safe">DRY &amp; PASSABLE</span>
+              <span class="up-type">CANAL CULVERT</span>
+            </div>
+            <h3 class="up-title">Central Canal Underpass</h3>
+            <div class="up-connects">MT Block / TT Annexe ↔ Just Bake / E &amp; K Block</div>
+            <p class="up-desc">
+              Low-clearance canal culvert with a 2.4m topographic elevation depression. Highly susceptible to storm water accumulation during cloudbursts.
+            </p>
+          </div>
+          <div class="up-card-footer">
+            <span class="up-note">Auto-reroutes pedestrians to H&amp;J Block Tunnel during downpours.</span>
+            <a href="/map?focus=12.971462,79.160364" class="btn-card-map">View on Map ↗</a>
+          </div>
+        </div>
+
+        <!-- Chokepoint 2 -->
+        <div class="underpass-card">
+          <div>
+            <div class="up-card-header">
+              <span class="up-badge badge-safe">DRY &amp; PASSABLE</span>
+              <span class="up-type">PERIMETER CULVERT</span>
+            </div>
+            <h3 class="up-title">West Boundary Canal Underpass</h3>
+            <div class="up-connects">Anna Audi Courts ↔ A-Block Hostels / One Food World</div>
+            <p class="up-desc">
+              Perimeter drainage underpass adjoining the western boundary. Runoff from adjacent fields quickly submerges this low-dip crossing.
+            </p>
+          </div>
+          <div class="up-card-footer">
+            <span class="up-note">Alerts western hostel residents to use the central arterial crossings.</span>
+            <a href="/map?focus=12.971460,79.156540" class="btn-card-map">View on Map ↗</a>
+          </div>
+        </div>
+
+        <!-- Chokepoint 3 -->
+        <div class="underpass-card">
+          <div>
+            <div class="up-card-header">
+              <span class="up-badge badge-safe">SAFE HIGH-WATER ARTERY</span>
+              <span class="up-type">REINFORCED TUNNEL</span>
+            </div>
+            <h3 class="up-title">H &amp; J Block Main Tunnel</h3>
+            <div class="up-connects">Technology Tower / Fountain ↔ H &amp; J Hostels</div>
+            <p class="up-desc">
+              Reinforced, high-clearance arterial tunnel equipped with dedicated storm pumps. Engineered to remain open and safe during severe monsoon downpours.
+            </p>
+          </div>
+          <div class="up-card-footer">
+            <span class="up-note">Primary recommended bypass corridor for north-south pedestrian crossing.</span>
+            <a href="/map?focus=12.971424,79.158316" class="btn-card-map">View on Map ↗</a>
+          </div>
+        </div>
+
+        <!-- Chokepoint 4 -->
+        <div class="underpass-card">
+          <div>
+            <div class="up-card-header">
+              <span class="up-badge badge-safe">HIGH-RESILIENCE ARTERY</span>
+              <span class="up-type">HIGHWAY CROSSING</span>
+            </div>
+            <h3 class="up-title">Pearl Research Park (PRP) Tunnel</h3>
+            <div class="up-connects">Main Campus Road ↔ Gate 11A / Pearl Research Park</div>
+            <p class="up-desc">
+              Grade-separated multi-lane arterial road underpass connecting Gate 11A and the Pearl Research Park courtyard. Elevated gradient prevents waterlogging.
+            </p>
+          </div>
+          <div class="up-card-footer">
+            <span class="up-note">High-throughput corridor connecting the eastern academic district.</span>
+            <a href="/map?focus=12.972300,79.165200" class="btn-card-map">View on Map ↗</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── BENTO GRID FEATURES ───────────────────────────────────────────── -->
+  <section id="features" class="lp-section">
+    <div class="lp-container">
+      <div class="section-header text-center mx-auto">
+        <span class="section-kicker">ENGINEERING HIGHLIGHTS</span>
+        <h2 class="section-title">Platform Features &amp; Architecture</h2>
+        <p class="section-desc">
+          Built with custom client-side graph algorithms, WebGL rendering, and sub-millisecond in-memory indexes.
+        </p>
+      </div>
+
+      <div class="bento-grid">
+        <!-- Bento 1: Disaster Rerouting (Span 2) -->
+        <div class="bento-card bento-span-2">
+          <div class="bento-icon-wrapper">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h3 class="bento-title">Disaster-Aware A* Rerouting Engine</h3>
+          <p class="bento-text">
+            When rainfall exceeds 28 mm/h or users submit confirmed flood blockages, Sentinel's routing engine instantly eliminates impassable edges and applies risk penalty multipliers to waterlogged caution corridors. You are guaranteed a dry, reliable walking route between hostels and exam halls.
+          </p>
+          <div class="bento-pills">
+            <span class="bento-pill">A* Algorithm</span>
+            <span class="bento-pill">Custom Binary Heap</span>
+            <span class="bento-pill">Quantified ETA &amp; Distance Deltas</span>
+            <span class="bento-pill">Automated Explanations</span>
+          </div>
+        </div>
+
+        <!-- Bento 2: Spotlight (Span 1) -->
+        <div class="bento-card bento-span-1">
+          <div class="bento-icon-wrapper">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </div>
+          <h3 class="bento-title">Sub-Millisecond Spotlight</h3>
+          <p class="bento-text">
+            Press <kbd>⌘K</kbd> anywhere on campus to instantly search 1,363 indexed records: classrooms (PRP 327, SJT 101), hostel blocks (MH A–T, LH A–C), gates, ATMs, and verified faculty profiles.
+          </p>
+          <div class="bento-pills">
+            <span class="bento-pill">&lt;1 ms Search Latency</span>
+            <span class="bento-pill">Fuzzy Token Matching</span>
+          </div>
+        </div>
+
+        <!-- Bento 3: Mess Menus (Span 1) -->
+        <div class="bento-card bento-span-1">
+          <div class="bento-icon-wrapper">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+          </div>
+          <h3 class="bento-title">Live Campus Mess Menus</h3>
+          <p class="bento-text">
+            Synchronized snapshots of 740 daily meals across 6 campus dining halls. Type <kbd>mess dinner</kbd> to see tonight's dinner menu without logging into VTOP.
+          </p>
+          <div class="bento-pills">
+            <span class="bento-pill">6 Mess Halls</span>
+            <span class="bento-pill">Daily Menu Sync</span>
+          </div>
+        </div>
+
+        <!-- Bento 4: 3D Twins (Span 2) -->
+        <div class="bento-card bento-span-2">
+          <div class="bento-icon-wrapper">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+          </div>
+          <h3 class="bento-title">3D Architectural Twins &amp; Room-Level Pins</h3>
+          <p class="bento-text">
+            Explore a complete 3D polygonal extrusion of Pearl Research Park (PRP) with individual floor layouts (Floors 1–7) and courtyard walkways. Switch between Satellite imagery and high-contrast 3D tilt mode with right-click drag or two-finger gesture.
+          </p>
+          <div class="bento-pills">
+            <span class="bento-pill">PRP 3D Mesh</span>
+            <span class="bento-pill">Multi-Floor Wayfinding</span>
+            <span class="bento-pill">Esri Satellite Tiles</span>
+            <span class="bento-pill">WebGL 60 FPS</span>
+          </div>
+        </div>
+
+        <!-- Bento 5: Crowd Reports (Span 1) -->
+        <div class="bento-card bento-span-1">
+          <div class="bento-icon-wrapper">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          </div>
+          <h3 class="bento-title">Field Reports &amp; Photo Proof</h3>
+          <p class="bento-text">
+            Spotted waterlogging or a closed pathway? Submit GPS coordinates and geotagged photographic proof. Reports dynamically block routes for other students in real time.
+          </p>
+          <div class="bento-pills">
+            <span class="bento-pill">Photo Evidence</span>
+            <span class="bento-pill">GPS Geotagging</span>
+          </div>
+        </div>
+
+        <!-- Bento 6: Privacy (Span 2) -->
+        <div class="bento-card bento-span-2">
+          <div class="bento-icon-wrapper">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <h3 class="bento-title">100% Client-Side Privacy &amp; Offline Performance</h3>
+          <p class="bento-text">
+            The entire campus map extract, graph database, and search index compress down to just 391 kB of static GeoJSON. Everything runs locally inside your browser with zero analytics tracking, zero external tile server subscriptions, and zero downtime.
+          </p>
+          <div class="bento-pills">
+            <span class="bento-pill">391 kB Total Payload</span>
+            <span class="bento-pill">Zero Tracking</span>
+            <span class="bento-pill">Self-Hosted OSM</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── POPULAR COMMUTES ──────────────────────────────────────────────── -->
+  <section id="commutes" class="lp-section lp-section-darker">
+    <div class="lp-container">
+      <div class="section-header text-center mx-auto">
+        <span class="section-kicker">TRY IT IN 1 CLICK</span>
+        <h2 class="section-title">Popular Campus Commutes</h2>
+        <p class="section-desc">
+          Click any route below to plot the optimal walking trajectory directly on the interactive map.
+        </p>
+      </div>
+
+      <div class="commute-grid">
+        <!-- Route 1 -->
+        <div class="commute-card" data-commute-route="12.97350,79.16100,Q-Block Hostels,12.97103,79.16368,Silver Jubilee Tower (SJT)">
+          <div>
+            <div class="c-header">
+              <span class="c-tag">MORNING LECTURE</span>
+              <span class="c-stat">6 min · 470m</span>
+            </div>
+            <h3 class="c-title">Q-Block Hostels ➔ Silver Jubilee Tower</h3>
+            <p class="c-desc">Direct pedestrian artery through the eastern campus promenade.</p>
+          </div>
+          <a href="/map?route=12.97350,79.16100,Q-Block%20Hostels,12.97103,79.16368,Silver%20Jubilee%20Tower%20(SJT)" class="btn-commute-action">
+            <span>Plot Route on Map →</span>
+          </a>
+        </div>
+
+        <!-- Route 2 -->
+        <div class="commute-card" data-commute-route="12.96985,79.15595,Technology Tower (TT),12.97250,79.15850,Food Street">
+          <div>
+            <div class="c-header">
+              <span class="c-tag tag-monsoon">MONSOON PROTECTED</span>
+              <span class="c-stat">5 min · 410m</span>
+            </div>
+            <h3 class="c-title">Technology Tower ➔ Food Street</h3>
+            <p class="c-desc">Crosses via H&amp;J Block Main Tunnel; stays dry during downpours.</p>
+          </div>
+          <a href="/map?route=12.96985,79.15595,Technology%20Tower%20(TT),12.97250,79.15850,Food%20Street" class="btn-commute-action">
+            <span>Plot Route on Map →</span>
+          </a>
+        </div>
+
+        <!-- Route 3 -->
+        <div class="commute-card" data-commute-route="12.96870,79.15580,Main Gate 1,12.97280,79.16480,Pearl Research Park (PRP)">
+          <div>
+            <div class="c-header">
+              <span class="c-tag">TRANS-CAMPUS</span>
+              <span class="c-stat">12 min · 980m</span>
+            </div>
+            <h3 class="c-title">Main Gate 1 ➔ Pearl Research Park</h3>
+            <p class="c-desc">Arterial corridor connecting Katpadi Road entrance to PRP.</p>
+          </div>
+          <a href="/map?route=12.96870,79.15580,Main%20Gate%201,12.97280,79.16480,Pearl%20Research%20Park%20(PRP)" class="btn-commute-action">
+            <span>Plot Route on Map →</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FINAL CALL TO ACTION BANNER ───────────────────────────────────── -->
+  <section class="lp-section">
+    <div class="lp-container">
+      <div class="cta-banner-wrapper">
+        <div class="cta-glow-backdrop"></div>
+        <div class="cta-content">
+          <span class="section-kicker">GET STARTED RIGHT NOW</span>
+          <h2 class="cta-title">Ready to Navigate VIT Vellore with Total Confidence?</h2>
+          <p class="cta-text">
+            Explore the campus map, test the disaster-aware rerouting simulator, or search for any building or mess hall in seconds.
+          </p>
+          <div class="cta-buttons">
+            <a href="/map" class="btn-hero-primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+              <span>Open Interactive Map</span>
+              <span>➔</span>
+            </a>
+            <a href="/map?view=dashboard" class="btn-hero-secondary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+              <span>Campus Safety Dashboard</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ───────────────────────────────────────────────────────── -->
+  <footer class="lp-footer">
+    <div class="lp-container footer-inner">
+      <div class="footer-copy">
+        <strong>SENTINEL</strong> — A community open-source wayfinding and flood resilience project for Vellore Institute of Technology.
+      </div>
+      <div class="footer-links">
+        <a href="https://www.openstreetmap.org/relation/15931944" target="_blank" rel="noopener" class="footer-link">OpenStreetMap</a>
+        <span>·</span>
+        <a href="https://open-meteo.com" target="_blank" rel="noopener" class="footer-link">Open-Meteo</a>
+        <span>·</span>
+        <a href="https://www.globalfloods.eu" target="_blank" rel="noopener" class="footer-link">Copernicus GloFAS</a>
+        <span>·</span>
+        <span style="color: var(--lp-text-dim);">MIT License</span>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/landing-main.ts"></script>
 </body>
 </html>
