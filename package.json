@@ -3,8 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "A map of VIT Vellore with the things students actually look for, plus one fast search over all of it.",
-  "author": "Aryaveer Pratap Singh",
+  "description": "Sentinel — VIT Vellore 3D Campus Map & Flood Safety Engine",
   "license": "MIT",
   "scripts": {
     "fetch": "node scripts/fetch-osm.mjs",

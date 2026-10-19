@@ -5,6 +5,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v3.4-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![GSAP](https://img.shields.io/badge/Motion-GSAP_ScrollTrigger-88CE02?logo=greensock&logoColor=white)](https://greensock.com/)
 [![MapLibre GL](https://img.shields.io/badge/MapLibre_GL-3D_Vector-396BFA)](https://maplibre.org/)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FSomeone1701%2FSentinal)
 
 An intelligent 3D campus navigation platform and autonomous flood safety engine for **VIT Vellore** (12.9692° N, 79.1559° E).
 
@@ -80,6 +81,7 @@ Campus chokepoints—notably the low-lying railway underpasses linking the main 
 ├── index.html              # Core 3D interactive campus map application
 ├── tailwind.config.js      # Tailwind CSS v3 theme tokens & plugins
 ├── postcss.config.js       # PostCSS processor config
+├── vercel.json             # Vercel deployment configuration
 └── vite.config.ts          # Vite build pipeline (multi-page configuration)
 ```
 
@@ -127,6 +129,63 @@ npm run dev
 
 ---
 
+## Deploying to Vercel
+
+Sentinel is optimized for instant zero-configuration deployment on **Vercel** as a static Vite web application.
+
+### Method 1: Deploy via Vercel Dashboard (Recommended)
+
+1. **Push your code to GitHub**:
+   Ensure all changes are pushed to your remote repository on GitHub (`main` branch).
+2. **Open Vercel**:
+   Go to [vercel.com](https://vercel.com) and log in.
+3. **Import Project**:
+   Click **"Add New..."** → **"Project"**, then select the `Sentinal` repository from your GitHub account.
+4. **Configure Project Settings**:
+   Vercel will automatically detect Vite. Confirm the following settings:
+   - **Framework Preset**: `Vite`
+   - **Root Directory**: `./` (leave default)
+   - **Build Command**: `npm run build` *(runs `npm run build:data && vite build`)*
+   - **Output Directory**: `dist`
+   - **Install Command**: `npm install`
+5. **Node.js Version**:
+   In **Project Settings → General → Node.js Version**, ensure `20.x` or `22.x` is selected (matching `.nvmrc`).
+6. **Click "Deploy"**:
+   Vercel will compile the spatial graph data and bundle the multi-page app (`index.html` and `landing.html`) in ~20 seconds.
+
+### Method 2: Deploy via Vercel CLI
+
+You can also deploy directly from your local terminal using the official Vercel CLI:
+
+```bash
+# 1. Install Vercel CLI globally
+npm i -g vercel
+
+# 2. Log in to your Vercel account
+vercel login
+
+# 3. Deploy preview build (follow the interactive prompts, accept defaults)
+vercel
+
+# 4. Deploy directly to production
+vercel --prod
+```
+
+### Vercel Routing & Clean URLs
+
+The repository includes a [vercel.json](vercel.json) file:
+```json
+{
+  "cleanUrls": true,
+  "framework": "vite"
+}
+```
+- `/` serves the 3D Interactive Map Engine (`index.html`).
+- `/landing` or `/landing.html` serves the Cinematic GSAP Intro & Overview page (`landing.html`).
+- Deep-links like `/?route=...` and `/?hazard=...` are handled seamlessly.
+
+---
+
 ## Testing & Quality Assurance
 
 Sentinel features a strict automated test suite covering TypeScript compilation, graph build invariants, search latency, flood routing, and DOM element contracts:
@@ -165,11 +224,6 @@ npm run build
 2. **Curated Coordinates**: For items not accepted by OSM, submit a pull request modifying `data/curated/places.json`. Coordinates must be verified on-site.
 
 ---
-
-## Authors & Acknowledgments
-
-- **Lead Developer**: [Aryaveer Pratap Singh](https://www.linkedin.com/in/aryaveer-pratap-singh-705769423/)
-- **Repository**: [Someone1701 / Sentinal](https://github.com/Someone1701/Sentinal)
 
 ## License
 
