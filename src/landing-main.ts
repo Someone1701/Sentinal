@@ -413,8 +413,9 @@ function initCommuteCardActions() {
       e.preventDefault()
       const routeData = card.dataset.commuteRoute
       if (routeData) {
-        window.location.href = `/?route=${encodeURIComponent(routeData)}`
+        window.location.href = `/map?route=${encodeURIComponent(routeData)}`
       }
     })
   })
 }
+

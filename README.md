@@ -124,8 +124,8 @@ npm run build:data
 npm run dev
 ```
 
-- **Landing Page & Intro**: Open [http://localhost:5180/landing.html](http://localhost:5180/landing.html)
-- **3D Interactive Map Engine**: Open [http://localhost:5180/](http://localhost:5180/)
+- **Cinematic Intro & Landing Page**: Open [http://localhost:5180/](http://localhost:5180/)
+- **3D Interactive Map & Flood Engine**: Open [http://localhost:5180/map](http://localhost:5180/map)
 
 ---
 
@@ -176,13 +176,19 @@ vercel --prod
 The repository includes a [vercel.json](vercel.json) file:
 ```json
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
-  "framework": "vite"
+  "framework": "vite",
+  "rewrites": [
+    { "source": "/", "destination": "/landing.html" },
+    { "source": "/map", "destination": "/index.html" },
+    { "source": "/landing", "destination": "/landing.html" }
+  ]
 }
 ```
-- `/` serves the 3D Interactive Map Engine (`index.html`).
-- `/landing` or `/landing.html` serves the Cinematic GSAP Intro & Overview page (`landing.html`).
-- Deep-links like `/?route=...` and `/?hazard=...` are handled seamlessly.
+- `/` serves the Cinematic GSAP Intro & Overview page (`landing.html`).
+- `/map` serves the 3D Interactive Map Engine & Campus Dashboard (`index.html`).
+- Deep-links like `/map?route=...`, `/map?focus=...`, and `/map?hazard=...` are handled seamlessly.
 
 ---
 

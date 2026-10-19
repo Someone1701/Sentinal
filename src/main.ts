@@ -1021,7 +1021,7 @@ async function start() {
 
   document.getElementById('brand-btn')!.addEventListener('click', () => showAbout(campus))
   document.getElementById('view-landing-btn')?.addEventListener('click', () => {
-    window.location.href = '/landing.html'
+    window.location.href = '/'
   })
   document.getElementById('go-mess')!.addEventListener('click', () => { setViewMode('map'); jumpMess() })
   document.getElementById('go-prp')!.addEventListener('click', () => { setViewMode('map'); jumpPrp() })
@@ -1080,7 +1080,7 @@ async function start() {
     }
 
     if (view === 'landing') {
-      window.location.href = '/landing.html'
+      window.location.href = '/'
       return
     }
 

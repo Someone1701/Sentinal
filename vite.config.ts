@@ -18,8 +18,37 @@ function noCrossorigin(): Plugin {
   }
 }
 
+/**
+ * Route rewrites for dev and preview servers:
+ * - Root path `/` serves the cinematic intro landing page (`landing.html`).
+ * - `/map` serves the campus map and disaster engine (`index.html`).
+ */
+function routeRewrite(): Plugin {
+  const rewriteMiddleware = (req: any, _res: any, next: () => void) => {
+    const url = req.url ?? ''
+    const [pathname, search] = url.split('?')
+    const query = search ? `?${search}` : ''
+    if (pathname === '/' || pathname === '') {
+      req.url = `/landing.html${query}`
+    } else if (pathname === '/map') {
+      req.url = `/index.html${query}`
+    }
+    next()
+  }
+
+  return {
+    name: 'route-rewrite-dev',
+    configureServer(server) {
+      server.middlewares.use(rewriteMiddleware)
+    },
+    configurePreviewServer(server) {
+      server.middlewares.use(rewriteMiddleware)
+    },
+  }
+}
+
 export default defineConfig({
-  plugins: [noCrossorigin()],
+  plugins: [noCrossorigin(), routeRewrite()],
   // Vercel sets VERCEL=1 in its build environment. Analytics posts to
   // /_vercel/insights, which only exists there — anywhere else (local, CI,
   // Cloudflare Pages) it 404s and logs a console error.

@@ -17,7 +17,7 @@ const argOf = (k, d) => {
   const i = process.argv.indexOf(`--${k}`)
   return i > -1 ? process.argv[i + 1] : d
 }
-const URL_ = argOf('url', 'http://localhost:5180/')
+const URL_ = argOf('url', 'http://localhost:5180/map')
 const SHOTS = process.argv.includes('--shot')
 
 const CHROME = [
