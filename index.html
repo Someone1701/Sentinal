@@ -77,6 +77,7 @@
         <a href="#hero" class="lp-nav-link">Overview</a>
         <a href="#underpasses" class="lp-nav-link">4 Underpasses</a>
         <a href="#features" class="lp-nav-link">Features</a>
+        <a href="#campus-gallery" class="lp-nav-link">Gallery</a>
         <a href="#commutes" class="lp-nav-link">Commutes</a>
       </nav>
 
@@ -386,6 +387,201 @@
             <span class="bento-pill">Self-Hosted OSM</span>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── GSAP HORIZONTAL SCROLLING GALLERY (demos.gsap.com/demo/horizontal-scrolling-gallery/) ── -->
+  <section id="campus-gallery" class="lp-gallery-pinned-section" aria-label="Campus Digital Twin Panoramic Gallery">
+    <div class="gallery-ambient-mesh"></div>
+
+    <!-- Sticky Gallery HUD Bar -->
+    <div class="gallery-hud-bar">
+      <div class="gallery-hud-title-col">
+        <span class="gallery-section-kicker">PANORAMIC DIGITAL TWIN</span>
+        <h2 class="gallery-section-heading">Campus Exploration Gallery</h2>
+      </div>
+
+      <div class="gallery-hud-controls">
+        <span id="gallery-sector-label" class="gallery-sector-badge">PEARL RESEARCH PARK (PRP)</span>
+        <div class="gallery-counter-box">
+          <span id="gallery-current-num">01</span>
+          <span class="gallery-counter-sep">/</span>
+          <span class="gallery-total-num">06</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pinned Horizontal Track Viewport -->
+    <div class="gallery-horizontal-viewport">
+      <div class="gallery-horizontal-track" id="gallery-horizontal-track">
+
+        <!-- Sector 01: Pearl Research Park 3D Twin -->
+        <article class="gallery-card" data-sector-label="PEARL RESEARCH PARK (PRP)">
+          <div class="gallery-card-glow glow-cyan"></div>
+          <div class="gallery-card-top">
+            <span class="gallery-sector-kicker">SECTOR 01 · EAST QUADRANT</span>
+            <span class="gallery-pill pill-cyan">3D DIGITAL TWIN</span>
+          </div>
+          <div class="gallery-card-body">
+            <h3 class="gallery-card-title">Pearl Research Park Complex</h3>
+            <p class="gallery-card-desc">
+              High-precision 7-story digital twin featuring color-coded roofs (Blocks A–E), central clock tower, courtyard walkways, and multi-floor room wayfinding.
+            </p>
+            <div class="gallery-card-metrics">
+              <span class="gallery-metric-tag">7 Extruded Floors</span>
+              <span class="gallery-metric-tag">38 Surveyed Rooms</span>
+              <span class="gallery-metric-tag">271 Mesh Parts</span>
+            </div>
+          </div>
+          <div class="gallery-card-footer">
+            <a href="/map?focus=12.97280,79.16480" class="btn-gallery-action">
+              <span>View PRP in 3D Mode</span>
+              <span>➔</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Sector 02: Underpass Hydrology & Flood Sensors -->
+        <article class="gallery-card" data-sector-label="KATPADI UNDERPASSES">
+          <div class="gallery-card-glow glow-crimson"></div>
+          <div class="gallery-card-top">
+            <span class="gallery-sector-kicker">SECTOR 02 · HYDROLOGY</span>
+            <span class="gallery-pill pill-crimson">FLOOD TELEMETRY</span>
+          </div>
+          <div class="gallery-card-body">
+            <h3 class="gallery-card-title">Railway Underpass Sensor Grid</h3>
+            <p class="gallery-card-desc">
+              Automated runoff monitoring across 4 low-lying railway dip crossings. Triggers dynamic edge closures and guides students to high-ground pedestrian skywalks.
+            </p>
+            <div class="gallery-card-metrics">
+              <span class="gallery-metric-tag">4 IoT Sensors</span>
+              <span class="gallery-metric-tag">28 mm/h Downpour Trigger</span>
+              <span class="gallery-metric-tag">Instant Safe Rerouting</span>
+            </div>
+          </div>
+          <div class="gallery-card-footer">
+            <a href="/map?hazard=monsoon_flood" class="btn-gallery-action">
+              <span>Simulate Downpour Collision</span>
+              <span>➔</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Sector 03: Chennai–Bengaluru Rail Mainline -->
+        <article class="gallery-card" data-sector-label="MAINLINE RAILWAY">
+          <div class="gallery-card-glow glow-emerald"></div>
+          <div class="gallery-card-top">
+            <span class="gallery-sector-kicker">SECTOR 03 · TRANSIT CORRIDOR</span>
+            <span class="gallery-pill pill-emerald">ACTIVE RAILWAY</span>
+          </div>
+          <div class="gallery-card-body">
+            <h3 class="gallery-card-title">Chennai–Bengaluru Rail Mainline</h3>
+            <p class="gallery-card-desc">
+              The high-speed rail corridor bisecting campus plots. Features live animated passenger express trains and safety boundary buffers around all track lines.
+            </p>
+            <div class="gallery-card-metrics">
+              <span class="gallery-metric-tag">Dual Express Tracks</span>
+              <span class="gallery-metric-tag">60 FPS Train Physics</span>
+              <span class="gallery-metric-tag">Grade-Separated Paths</span>
+            </div>
+          </div>
+          <div class="gallery-card-footer">
+            <a href="/map?focus=12.97150,79.15920" class="btn-gallery-action">
+              <span>Inspect Rail Line On Map</span>
+              <span>➔</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Sector 04: Classroom & Exam Hall Directory -->
+        <article class="gallery-card" data-sector-label="ACADEMIC BUILDINGS">
+          <div class="gallery-card-glow glow-purple"></div>
+          <div class="gallery-card-top">
+            <span class="gallery-sector-kicker">SECTOR 04 · WAYFINDING</span>
+            <span class="gallery-pill pill-purple">INDOOR DIRECTORY</span>
+          </div>
+          <div class="gallery-card-body">
+            <h3 class="gallery-card-title">Classrooms &amp; Exam Hall Finder</h3>
+            <p class="gallery-card-desc">
+              Sub-millisecond indexed search directory for 30 academic blocks including Silver Jubilee Tower (SJT), Technology Tower (TT), SMV, and PRP 327.
+            </p>
+            <div class="gallery-card-metrics">
+              <span class="gallery-metric-tag">1,363 Indexed Places</span>
+              <span class="gallery-metric-tag">1,148 Faculty Members</span>
+              <span class="gallery-metric-tag">&lt;1 ms Fuzzy Search</span>
+            </div>
+          </div>
+          <div class="gallery-card-footer">
+            <a href="/map?q=prp 327" class="btn-gallery-action">
+              <span>Locate PRP 327 Hall</span>
+              <span>➔</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Sector 05: Student Dining & Mess Network -->
+        <article class="gallery-card" data-sector-label="DINING & MESS HALLS">
+          <div class="gallery-card-glow glow-amber"></div>
+          <div class="gallery-card-top">
+            <span class="gallery-sector-kicker">SECTOR 05 · NUTRITION</span>
+            <span class="gallery-pill pill-amber">LIVE MENUS</span>
+          </div>
+          <div class="gallery-card-body">
+            <h3 class="gallery-card-title">6 Dining Halls &amp; 740 Daily Menus</h3>
+            <p class="gallery-card-desc">
+              Synchronized meal feeds from MessIT for LH &amp; MH dining halls (Darling, PR Caterers, Sri Sabari, Foodys). Search breakfast, lunch, snacks, and dinner instantly.
+            </p>
+            <div class="gallery-card-metrics">
+              <span class="gallery-metric-tag">6 Dining Halls</span>
+              <span class="gallery-metric-tag">740 Live Daily Meals</span>
+              <span class="gallery-metric-tag">Dietary Indicators</span>
+            </div>
+          </div>
+          <div class="gallery-card-footer">
+            <a href="/map?q=mess" class="btn-gallery-action">
+              <span>Browse Tonight's Dinners</span>
+              <span>➔</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Sector 06: Disaster Operations & Evacuation Assembly -->
+        <article class="gallery-card" data-sector-label="EMERGENCY OPERATIONS">
+          <div class="gallery-card-glow glow-indigo"></div>
+          <div class="gallery-card-top">
+            <span class="gallery-sector-kicker">SECTOR 06 · RESILIENCE</span>
+            <span class="gallery-pill pill-indigo">SOS SHELTERS</span>
+          </div>
+          <div class="gallery-card-body">
+            <h3 class="gallery-card-title">Evacuation Shelters &amp; SOS Dispatch</h3>
+            <p class="gallery-card-desc">
+              High-ground evacuation assembly zones, campus security SOS hotlines, and 100% offline-first routing that functions even during power and cell network outages.
+            </p>
+            <div class="gallery-card-metrics">
+              <span class="gallery-metric-tag">4 Safe Havens</span>
+              <span class="gallery-metric-tag">100% Offline Static</span>
+              <span class="gallery-metric-tag">Zero Telemetry Leaks</span>
+            </div>
+          </div>
+          <div class="gallery-card-footer">
+            <a href="/map?view=dashboard" class="btn-gallery-action">
+              <span>Launch Operations Dashboard</span>
+              <span>➔</span>
+            </a>
+          </div>
+        </article>
+
+      </div>
+    </div>
+
+    <!-- Gallery Bottom Progress Strip -->
+    <div class="gallery-bottom-strip">
+      <div class="gallery-progress-track">
+        <div id="gallery-progress-fill" class="gallery-progress-bar"></div>
+      </div>
+      <div class="gallery-scroll-hint">
+        ← SCROLL VERTICALLY TO SWEEP HORIZONTALLY →
       </div>
     </div>
   </section>

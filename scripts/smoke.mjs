@@ -429,7 +429,21 @@ const RUNTIME_IDS = new Set([
   'intro-screen',
   'intro-scroll-trigger-btn',
   'hero',
+  'gsap-cursor-trail-root',
+  'neoleaf-transition-overlay',
+  'neoleaf-shutter-top',
+  'neoleaf-shutter-bottom',
+  'neoleaf-center-content',
+  'neoleaf-status-text',
+  'neoleaf-counter-val',
+  'neoleaf-laser-bar',
+  'campus-gallery',
+  'gallery-horizontal-track',
+  'gallery-progress-fill',
+  'gallery-current-num',
+  'gallery-sector-label',
 ])
+
 
 const html = (await readFile(join(ROOT, 'index.html'), 'utf8')) + '\n' + (await readFile(join(ROOT, 'map.html'), 'utf8'))
 const present = new Set([...html.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]))

@@ -15,6 +15,7 @@ import { disasterService } from './disaster/service'
 import { initDisasterPanel } from './ui/disaster-panel'
 import { initDashboard, showDashboard } from './ui/dashboard'
 import { initLanding } from './ui/landing'
+import { playNeoLeafTransition } from './ui/neoleaf-loader'
 
 
 
@@ -149,10 +150,38 @@ async function start() {
     setTimeout(() => { map.resize() }, 200)
   }
 
+  function transitionToView(mode: ViewMode, immediate = false) {
+    if (mode === 'landing') {
+      playNeoLeafTransition({
+        targetUrl: '/',
+        statusText: 'RETURNING TO CAMPUS INTELLIGENCE BRIEFING',
+        fast: false,
+      })
+      return
+    }
+
+    if (mode === currentViewMode || immediate) {
+      setViewMode(mode)
+      return
+    }
+
+    const label = mode === 'dashboard'
+      ? 'LAUNCHING CAMPUS SAFETY DASHBOARD'
+      : 'ENGAGING 3D WEBGL MAP ENGINE'
+
+    playNeoLeafTransition({
+      statusText: label,
+      fast: true,
+      onComplete: () => {
+        setViewMode(mode)
+      },
+    })
+  }
+
   document.querySelectorAll<HTMLButtonElement>('[data-view]').forEach((btn) => {
     btn.addEventListener('click', () => {
       const mode = btn.dataset.view as ViewMode
-      if (mode) setViewMode(mode)
+      if (mode) transitionToView(mode)
     })
   })
 
@@ -899,11 +928,11 @@ async function start() {
       drawRoute(true)
     },
     onRecalculateRoute: () => drawRoute(false),
-    switchView: setViewMode,
+    switchView: (m) => transitionToView(m),
   })
 
   initLanding({
-    switchView: setViewMode,
+    switchView: (m) => transitionToView(m),
     routeTo: (lat, lon, label) => routeTo(lat, lon, label),
     setRouteEndpoints: (from, to) => {
       origin = from
@@ -1021,12 +1050,16 @@ async function start() {
 
   document.getElementById('brand-btn')!.addEventListener('click', () => showAbout(campus))
   document.getElementById('view-landing-btn')?.addEventListener('click', () => {
-    window.location.href = '/'
+    playNeoLeafTransition({
+      targetUrl: '/',
+      statusText: 'RETURNING TO CAMPUS INTELLIGENCE BRIEFING',
+      fast: false,
+    })
   })
-  document.getElementById('go-mess')!.addEventListener('click', () => { setViewMode('map'); jumpMess() })
-  document.getElementById('go-prp')!.addEventListener('click', () => { setViewMode('map'); jumpPrp() })
+  document.getElementById('go-mess')!.addEventListener('click', () => { transitionToView('map'); jumpMess() })
+  document.getElementById('go-prp')!.addEventListener('click', () => { transitionToView('map'); jumpPrp() })
   document.getElementById('disaster-btn')?.addEventListener('click', () => {
-    setViewMode('dashboard')
+    transitionToView('dashboard')
     showDashboard('tunnels')
   })
 
