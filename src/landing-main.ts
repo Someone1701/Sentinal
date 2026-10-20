@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initLiveTelemetry()
   initGsapAnimations()
   initHeroParallax()
-  initHorizontalGallery()
   initCommuteCardActions()
   initCursorTrail()
   wireNeoLeafLinks()
@@ -410,81 +409,6 @@ async function initLiveTelemetry() {
   }
 }
 
-/* ── GSAP HORIZONTAL SCROLLING GALLERY (demos.gsap.com/demo/horizontal-scrolling-gallery/) ── */
-
-function initHorizontalGallery() {
-  const section = document.getElementById('campus-gallery')
-  const track = document.getElementById('gallery-horizontal-track')
-  if (!section || !track) return
-
-  if (isReducedMotion()) {
-    // Graceful degradation for reduced motion
-    gsap.set(track, { overflowX: 'auto', display: 'flex' })
-    return
-  }
-
-  const cards = track.querySelectorAll<HTMLElement>('.gallery-card')
-  const total = cards.length
-  const progressFill = document.getElementById('gallery-progress-fill')
-  const currentNumEl = document.getElementById('gallery-current-num')
-  const sectorLabelEl = document.getElementById('gallery-sector-label')
-
-  // Calculate distance needed to scroll all cards through the viewport
-  const getScrollAmount = () => {
-    return Math.max(0, track.scrollWidth - window.innerWidth + 120)
-  }
-
-  // Pin section and translate track horizontally as vertical page scroll occurs
-  gsap.to(track, {
-    x: () => -getScrollAmount(),
-    ease: 'none',
-    scrollTrigger: {
-      trigger: section,
-      pin: true,
-      start: 'top top',
-      end: () => `+=${getScrollAmount()}`,
-      scrub: 0.8,
-      anticipatePin: 1,
-      invalidateOnRefresh: true,
-      onUpdate: (self) => {
-        // Update horizontal progress bar
-        if (progressFill) {
-          progressFill.style.width = `${Math.min(100, Math.max(0, self.progress * 100))}%`
-        }
-
-        // Update active sector card counter and label
-        const idx = Math.min(total - 1, Math.max(0, Math.floor(self.progress * total)))
-        if (currentNumEl) {
-          currentNumEl.textContent = idx < 9 ? `0${idx + 1}` : `${idx + 1}`
-        }
-
-        const activeCard = cards[idx]
-        const label = activeCard?.dataset.sectorLabel
-        if (sectorLabelEl && label && sectorLabelEl.textContent !== label) {
-          sectorLabelEl.textContent = label
-          gsap.fromTo(sectorLabelEl, { opacity: 0.5, y: -4 }, { opacity: 1, y: 0, duration: 0.25 })
-        }
-      },
-    },
-  })
-
-  // Subtle Parallax depth on individual cards as they scroll past
-  cards.forEach((card) => {
-    const glow = card.querySelector('.gallery-card-glow')
-    if (glow) {
-      gsap.to(glow, {
-        x: 40,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: section,
-          start: 'top top',
-          end: () => `+=${getScrollAmount()}`,
-          scrub: true,
-        },
-      })
-    }
-  })
-}
 
 /* ── INTERACTIVE PRESETS & LINKS ────────────────────────────────────────── */
 
