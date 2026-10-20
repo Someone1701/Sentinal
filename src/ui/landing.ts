@@ -42,7 +42,8 @@ function updateLandingLiveStats() {
   if (underpassesEl) {
     const safeCount =
       (state.blockedEdges.has(204) || state.blockedEdges.has(492) ? 0 : 1) +
-      (state.blockedEdges.has(434) ? 0 : 1) +
+      // PRP tunnel: check all 4 edges, not just 434
+      (state.blockedEdges.has(434) || state.blockedEdges.has(727) || state.blockedEdges.has(724) || state.blockedEdges.has(627) ? 0 : 1) +
       (state.blockedEdges.has(185) ? 0 : 1) +
       (state.blockedEdges.has(119) || state.blockedEdges.has(176) ? 0 : 1)
     underpassesEl.textContent = isFlooded ? `${4 - safeCount} of 4 Flooded` : 'All 4 Open & Safe'
@@ -66,7 +67,8 @@ export function renderLandingPage() {
 
   const safeCount =
     (state.blockedEdges.has(204) || state.blockedEdges.has(492) ? 0 : 1) +
-    (state.blockedEdges.has(434) ? 0 : 1) +
+    // PRP tunnel: check all 4 edges, not just 434
+    (state.blockedEdges.has(434) || state.blockedEdges.has(727) || state.blockedEdges.has(724) || state.blockedEdges.has(627) ? 0 : 1) +
     (state.blockedEdges.has(185) ? 0 : 1) +
     (state.blockedEdges.has(119) || state.blockedEdges.has(176) ? 0 : 1)
 

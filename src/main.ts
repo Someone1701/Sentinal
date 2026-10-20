@@ -1049,13 +1049,8 @@ async function start() {
   /* ── chrome ───────────────────────────────────────────────────────────── */
 
   document.getElementById('brand-btn')!.addEventListener('click', () => showAbout(campus))
-  document.getElementById('view-landing-btn')?.addEventListener('click', () => {
-    playNeoLeafTransition({
-      targetUrl: '/',
-      statusText: 'RETURNING TO CAMPUS INTELLIGENCE BRIEFING',
-      fast: false,
-    })
-  })
+  // NOTE: view-landing-btn is handled by the generic [data-view] loop above (transitionToView).
+  // A dedicated listener here would double-fire playNeoLeafTransition — removed intentionally.
   document.getElementById('go-mess')!.addEventListener('click', () => { transitionToView('map'); jumpMess() })
   document.getElementById('go-prp')!.addEventListener('click', () => { transitionToView('map'); jumpPrp() })
   document.getElementById('disaster-btn')?.addEventListener('click', () => {

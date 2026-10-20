@@ -47,9 +47,9 @@ interface NavigatorResult {
   origin: { lat: number; lon: number; label: string }
   target: { lat: number; lon: number; label: string }
   presetName?: string
-  baselineTimeMs: number
+  baselineTimeSec: number
   baselineDistM: number
-  safeTimeMs: number
+  safeTimeSec: number
   safeDistM: number
   deltaSeconds: number
   deltaMetres: number
@@ -156,9 +156,8 @@ export function initDashboard(h: DashboardHost) {
   // Auto-start GPS tracking so Start Point is immediately active
   startGpsTracking(false)
 
-  renderPrimaryDashboard(activeTab)
-
-  // Subscribe to disaster service changes so dashboard live updates
+  // NOTE: Do NOT call renderPrimaryDashboard() here — subscribe() fires it immediately,
+  // so calling it before subscribing would cause a double render on startup.
   disasterService.subscribe(() => {
     renderPrimaryDashboard(activeTab)
   })
@@ -197,7 +196,8 @@ export function renderPrimaryDashboard(tab?: TabType) {
 
   const safeCrossingsCount =
     (state.blockedEdges.has(204) || state.blockedEdges.has(492) ? 0 : 1) +
-    (state.blockedEdges.has(434) ? 0 : 1) +
+    // PRP tunnel: check all 4 of its edges, not just 434
+    (state.blockedEdges.has(434) || state.blockedEdges.has(727) || state.blockedEdges.has(724) || state.blockedEdges.has(627) ? 0 : 1) +
     (state.blockedEdges.has(185) ? 0 : 1) +
     (state.blockedEdges.has(119) || state.blockedEdges.has(176) ? 0 : 1)
 
@@ -500,7 +500,7 @@ function renderRouteTab(): string {
           <div class="route-stats-dual-grid">
             <div class="route-metric-box box-safe">
               <span class="rm-label">Safe Walking Time</span>
-              <span class="rm-val">${humanEta(r.safeTimeMs)}</span>
+              <span class="rm-val">${humanEta(r.safeTimeSec)}</span>
               <span class="rm-sub">${humanDistance(r.safeDistM)} distance</span>
             </div>
 
@@ -658,22 +658,22 @@ function renderTunnelsTab(state: ReturnType<typeof disasterService.getState>): s
         </div>
 
         <!-- Chokepoint 4: Pearl Research Park (PRP) Tunnel -->
-        <div class="chokepoint-card ${state.blockedEdges.has(434) ? 'card-blocked' : 'card-open'}">
+        <div class="chokepoint-card ${state.blockedEdges.has(434) || state.blockedEdges.has(727) || state.blockedEdges.has(724) || state.blockedEdges.has(627) ? 'card-blocked' : 'card-open'}">
           <div class="cp-header">
-            <span class="cp-status-pill ${state.blockedEdges.has(434) ? 'pill-blocked' : 'pill-safe'}">
-              ${state.blockedEdges.has(434) ? 'CLOSED' : 'OPEN (EAST SAFE TUNNEL)'}
+            <span class="cp-status-pill ${state.blockedEdges.has(434) || state.blockedEdges.has(727) || state.blockedEdges.has(724) || state.blockedEdges.has(627) ? 'pill-blocked' : 'pill-safe'}">
+              ${state.blockedEdges.has(434) || state.blockedEdges.has(727) || state.blockedEdges.has(724) || state.blockedEdges.has(627) ? 'CLOSED' : 'OPEN (EAST SAFE TUNNEL)'}
             </span>
             <span class="cp-type">Arterial Highway</span>
           </div>
           <h4 class="cp-title">Pearl Research Park (PRP) Tunnel</h4>
           <p class="cp-desc">Main Campus Road ↔ Gate 11A / Pearl Research Park Courtyard</p>
           <div class="cp-meta">
-            <span>Status: <strong>${state.blockedEdges.has(434) ? 'Blocked' : 'Clear Artery'}</strong></span>
+            <span>Status: <strong>${state.blockedEdges.has(434) || state.blockedEdges.has(727) || state.blockedEdges.has(724) || state.blockedEdges.has(627) ? 'Blocked' : 'Clear Artery'}</strong></span>
             <span>Drainage: <strong>Elevated Roadway</strong></span>
           </div>
           <div class="route-actions-row">
-            <button type="button" class="cp-toggle-btn ${state.blockedEdges.has(434) ? 'btn-mark-open' : 'btn-mark-flood'}" data-toggle-chokepoint="prpMainTunnel">
-              ${state.blockedEdges.has(434) ? `${icons.check} Clear Flood (Mark Open)` : `${icons.alertTriangle} Mark Flooded`}
+            <button type="button" class="cp-toggle-btn ${state.blockedEdges.has(434) || state.blockedEdges.has(727) || state.blockedEdges.has(724) || state.blockedEdges.has(627) ? 'btn-mark-open' : 'btn-mark-flood'}" data-toggle-chokepoint="prpMainTunnel">
+              ${state.blockedEdges.has(434) || state.blockedEdges.has(727) || state.blockedEdges.has(724) || state.blockedEdges.has(627) ? `${icons.check} Clear Flood (Mark Open)` : `${icons.alertTriangle} Mark Flooded`}
             </button>
             <button type="button" class="cp-fly-btn" data-fly-coords="79.16550,12.97140">${icons.map} View on Map</button>
           </div>
@@ -947,9 +947,9 @@ function planRoute(
     origin: from,
     target: to,
     presetName,
-    baselineTimeMs: baseSec,
+    baselineTimeSec: baseSec,
     baselineDistM: baseM,
-    safeTimeMs: safeSec,
+    safeTimeSec: safeSec,
     safeDistM: safeM,
     deltaSeconds: Math.max(0, safeSec - baseSec),
     deltaMetres: Math.max(0, safeM - baseM),

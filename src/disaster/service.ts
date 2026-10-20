@@ -640,7 +640,7 @@ class DisasterService {
       windSpeedKmh: 10,
       windGustsKmh: 16,
       windDirectionDeg: 60,
-      isLive: true,
+      isLive: false,  // hardcoded fallback — real fetch will set this to true
       source: 'Open-Meteo Synoptic Vellore Station (Normal Conditions)',
       lastFetchedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       hourlyForecast: hourly,
