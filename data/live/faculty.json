@@ -1,6 +1,6 @@
 {
  "_source": "https://vit.ac.in/faculty",
- "_fetched": "2026-10-03T16:07:48.493Z",
+ "_fetched": "2026-10-25T22:52:07.421Z",
  "_note": "Public faculty listings on vit.ac.in school pages. One record per person; joint appointments keep every department. Completeness is whatever those pages publish, not a payroll count.",
  "_incomplete_departments": [],
  "items": [
@@ -3178,15 +3178,6 @@
   },
   {
    "name": "Dr. Yokesh Babu S",
-   "title": "Faculty",
-   "dept": "SCOPE · iot",
-   "url": "https://vit.ac.in/school/allfaculty/scope/iot",
-   "depts": [
-    "SCOPE · iot"
-   ]
-  },
-  {
-   "name": "Dr. Allam Jaya Prakash",
    "title": "Faculty",
    "dept": "SCOPE · iot",
    "url": "https://vit.ac.in/school/allfaculty/scope/iot",
@@ -6735,15 +6726,6 @@
    ]
   },
   {
-   "name": "Dr. Chandra Segar T",
-   "title": "Faculty",
-   "dept": "SCORE · computer applications",
-   "url": "https://vit.ac.in/school/allfaculty/score/computer-applications",
-   "depts": [
-    "SCORE · computer applications"
-   ]
-  },
-  {
    "name": "Dr. Kanchan Keisham",
    "title": "Faculty",
    "dept": "SCORE · computer applications",
@@ -8565,15 +8547,6 @@
   },
   {
    "name": "Dr. Oyyaravelu R",
-   "title": "Faculty",
-   "dept": "SMEC · manufacturing engineering",
-   "url": "https://vit.ac.in/school/allfaculty/smec/manufacturing-engineering",
-   "depts": [
-    "SMEC · manufacturing engineering"
-   ]
-  },
-  {
-   "name": "Dr. Prince Kumar Rai",
    "title": "Faculty",
    "dept": "SMEC · manufacturing engineering",
    "url": "https://vit.ac.in/school/allfaculty/smec/manufacturing-engineering",
