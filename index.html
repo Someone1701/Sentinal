@@ -12,51 +12,56 @@
 
   <!-- ── PINNED CINEMATIC CURTAIN & ZOOM INTRO ────────────────────────── -->
   <section id="intro-screen" class="intro-viewport" aria-label="Welcome to Sentinel">
-    <!-- Cosmic Ambient Glow Aura -->
+    <!-- Cosmic Animated Multi-Orb Aurora -->
     <div class="intro-glow-aura">
-      <div class="w-[550px] h-[550px] rounded-full bg-gradient-to-tr from-cyan-500/20 via-indigo-500/25 to-transparent blur-[110px]"></div>
+      <div class="aurora-orb orb-cyan"></div>
+      <div class="aurora-orb orb-purple"></div>
+      <div class="aurora-orb orb-rose"></div>
     </div>
 
-    <!-- Top Coordinates & Status Bar -->
-    <div class="intro-top-bar flex items-center gap-3 pt-8 font-mono text-xs text-slate-400 tracking-widest uppercase z-10">
-      <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-      <span>VELLORE INSTITUTE OF TECHNOLOGY · 12.9698° N, 79.1559° E</span>
+    <!-- Top Status Bar Pill -->
+    <div class="intro-top-bar z-10">
+      <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#34d399]"></span>
+      <span class="font-medium tracking-wide">VELLORE INSTITUTE OF TECHNOLOGY · CAMPUS COMPANION</span>
     </div>
 
     <!-- Central Cinematic Kinetic Emblem & Typography -->
     <div class="intro-center-hero">
-      <!-- Luminous Emblem / Shield -->
+      <!-- Luminous Multi-Color Emblem -->
       <div class="intro-emblem">
         <div class="intro-emblem-ring"></div>
-        <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-indigo-600/25 border border-cyan-400/40 flex items-center justify-center text-cyan-300 shadow-[0_0_35px_rgba(34,211,238,0.35)] relative">
-          <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <div class="intro-emblem-box">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            <circle cx="12" cy="11" r="3"/>
+            <circle cx="12" cy="11" r="3.2"/>
           </svg>
         </div>
       </div>
 
-      <!-- Monospace Subtitle Kicker -->
+      <!-- Vibrant Student Kicker -->
       <div class="intro-kicker">
-        CAMPUS INTELLIGENCE &amp; FLOOD RESILIENCE
+        <span>✨</span>
+        <span>VIT VELLORE CAMPUS COMPANION &amp; GUIDE</span>
       </div>
 
-      <!-- Mega Title -->
-      <h1 class="intro-title">SENTINEL</h1>
+      <!-- Mega Title with 3D Kinetic Surfing -->
+      <h1 class="intro-title" id="intro-title" aria-label="SENTINEL">
+        <span class="surf-char" data-char="S">S</span><span class="surf-char" data-char="E">E</span><span class="surf-char" data-char="N">N</span><span class="surf-char" data-char="T">T</span><span class="surf-char" data-char="I">I</span><span class="surf-char" data-char="N">N</span><span class="surf-char" data-char="E">E</span><span class="surf-char" data-char="L">L</span>
+      </h1>
 
-      <!-- Kinetic Tagline -->
+      <!-- Friendly Student Tagline -->
       <p class="intro-tagline">
-        Autonomous wayfinding, 3D architectural digital twins, and real-time flood safety across the Katpadi railway underpasses.
+        Find any classroom in SJT or PRP, check today’s mess menus, locate hostels, and get dry walking directions when it rains — simple, fast, and made for students.
       </p>
     </div>
 
     <!-- Bottom Scroll Indicator & Action -->
     <div class="intro-bottom-action" id="intro-scroll-trigger-btn" role="button" tabindex="0" title="Click or scroll down to explore campus">
-      <span class="font-mono text-xs tracking-widest text-cyan-400 uppercase">Scroll to Enter Campus</span>
-      <div class="intro-mouse">
-        <div class="intro-mouse-wheel"></div>
+      <div class="intro-scroll-pill">
+        <span class="scroll-sparkle">🚀</span>
+        <span class="scroll-text">Scroll or Tap to Enter Campus</span>
       </div>
-      <div class="text-slate-500 text-xs font-mono tracking-wider">or click to skip</div>
+      <div class="text-slate-400 text-xs tracking-wider opacity-75">or click anywhere to jump in</div>
     </div>
   </section>
 
@@ -106,12 +111,12 @@
 
         <!-- Staggered Headline -->
         <h1 class="hero-h1">
-          <span class="hero-line-reveal">Real-Time Campus Navigation</span>
-          <span class="hero-line-reveal">Built for <span class="hero-grad-cyan">Sunshine</span> &amp; <span class="hero-grad-purple">Cloudbursts</span>.</span>
+          <span class="hero-line-reveal">The Friendly Campus Companion</span>
+          <span class="hero-line-reveal">Built for <span class="hero-grad-cyan">Sunny Days</span> &amp; <span class="hero-grad-purple">Heavy Showers</span>.</span>
         </h1>
 
         <p class="hero-subtitle">
-          Navigate 181 campus landmarks, explore daily mess menus and 3D architectural models, and steer clear of flooded railway underpasses with automated topographic runoff prediction.
+          Find any classroom in SJT or PRP, check today’s mess menus, locate hostels, and get instant flood-safe walking directions around VIT Vellore — simple, fast, and made for everyone.
         </p>
 
         <!-- CTA Buttons -->
@@ -127,31 +132,83 @@
           </a>
           <a href="/map?hazard=monsoon_flood" class="btn-hero-danger" title="Simulate 35 mm/h Monsoon Downpour">
             <span>🌧️</span>
-            <span>Simulate Monsoon Flood</span>
+            <span>Simulate Monsoon Safe Route</span>
           </a>
         </div>
 
-        <!-- Telemetry HUD Bar -->
+        <!-- Interactive Quick Category Explorer for Normal Users -->
+        <div class="hero-quick-explorer" aria-label="Quick Campus Categories">
+          <div class="quick-exp-header">
+            <span class="quick-exp-title">✨ What would you like to find?</span>
+            <span class="quick-exp-sub">One-click shortcuts to popular campus places</span>
+          </div>
+          <div class="quick-exp-grid">
+            <a href="/map?focus=12.971462,79.160364" class="quick-card card-mess">
+              <span class="quick-card-icon">🍽️</span>
+              <div class="quick-card-info">
+                <strong>Mess Menus</strong>
+                <span>Today's meals &amp; halls</span>
+              </div>
+            </a>
+            <a href="/map?focus=12.9708,79.1595" class="quick-card card-academic">
+              <span class="quick-card-icon">🏛️</span>
+              <div class="quick-card-info">
+                <strong>Classrooms</strong>
+                <span>SJT, PRP, TT &amp; SMV</span>
+              </div>
+            </a>
+            <a href="/map?focus=12.9725,79.1585" class="quick-card card-hostel">
+              <span class="quick-card-icon">🛏️</span>
+              <div class="quick-card-info">
+                <strong>Hostels</strong>
+                <span>MH A–Q &amp; Ladies' Blocks</span>
+              </div>
+            </a>
+            <a href="/map?hazard=monsoon_flood" class="quick-card card-rain">
+              <span class="quick-card-icon">☔</span>
+              <div class="quick-card-info">
+                <strong>Rain Safety</strong>
+                <span>Dry underpass guide</span>
+              </div>
+            </a>
+            <a href="/map?focus=12.9692,79.1558" class="quick-card card-gate">
+              <span class="quick-card-icon">🚪</span>
+              <div class="quick-card-info">
+                <strong>Campus Gates</strong>
+                <span>Gate 1, 2, 3, 5 &amp; 11</span>
+              </div>
+            </a>
+            <a href="/map?focus=12.9701,79.1572" class="quick-card card-cafe">
+              <span class="quick-card-icon">☕</span>
+              <div class="quick-card-info">
+                <strong>Food &amp; Cafes</strong>
+                <span>One Food World &amp; Bakeries</span>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Telemetry HUD Bar (Human-Friendly Campus Vitals) -->
         <div class="hero-telemetry-row">
           <div class="telemetry-card">
-            <div class="tel-label">Weather Station</div>
-            <div class="tel-val" data-lp-telemetry-weather>24°C · Clear / Dry</div>
-            <div class="tel-sub">Open-Meteo Synoptic</div>
+            <div class="tel-label">Campus Weather</div>
+            <div class="tel-val" data-lp-telemetry-weather>24°C · Clear &amp; Dry</div>
+            <div class="tel-sub">Live Open-Meteo</div>
           </div>
           <div class="telemetry-card">
-            <div class="tel-label">Railway Underpasses</div>
-            <div class="tel-val val-safe">All 4 Open &amp; Safe</div>
-            <div class="tel-sub">Topographic Runoff Sensor</div>
+            <div class="tel-label">Underpass Status</div>
+            <div class="tel-val val-safe">All 4 Open &amp; Dry</div>
+            <div class="tel-sub">Walkway Safety Monitor</div>
           </div>
           <div class="telemetry-card">
-            <div class="tel-label">Offline Network</div>
-            <div class="tel-val val-cyan">966 Nodes · 1,096 Edges</div>
-            <div class="tel-sub">Client-Side Graph</div>
+            <div class="tel-label">Campus Map Data</div>
+            <div class="tel-val val-cyan">181 Places · 153 Buildings</div>
+            <div class="tel-sub">Interactive 3D Model</div>
           </div>
           <div class="telemetry-card">
             <div class="tel-label">Directory Index</div>
-            <div class="tel-val">1,363 Entities</div>
-            <div class="tel-sub">181 POIs · 1,148 Faculty</div>
+            <div class="tel-val">1,363 Searchable Items</div>
+            <div class="tel-sub">Classrooms &amp; Faculty</div>
           </div>
         </div>
       </div>

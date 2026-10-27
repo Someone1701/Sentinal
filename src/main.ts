@@ -12,6 +12,7 @@ import { initPalette, openPalette } from './ui/palette'
 import { initPanel, showAbout, showMess, showMessIndex, showPerson, showPoi, hidePanel, showCoordinatePlace, type RoomFind } from './ui/panel'
 import { hidePing, showPing } from './ui/ping'
 import { disasterService } from './disaster/service'
+import { GROUND_TRUTH_CHOKEPOINTS } from './disaster/scenarios'
 import { initDisasterPanel } from './ui/disaster-panel'
 import { initDashboard, showDashboard } from './ui/dashboard'
 import { initLanding } from './ui/landing'
@@ -382,6 +383,35 @@ async function start() {
   let follow = false
   let lastFix: Fix | null = null
   let watch: { stop: () => void } | null = null
+  let lastDisallowCycle = false
+
+  const ALL_TUNNEL_EDGES = new Set<number>([
+    119, 176, 185, 188, 197, 202, 204, 216, 426, 434, 492, 606, 627, 636, 645, 669, 670, 679, 684, 689, 698, 724, 727, 825,
+    ...GROUND_TRUTH_CHOKEPOINTS.centralCanalUnderpass.edges,
+    ...GROUND_TRUTH_CHOKEPOINTS.westCanalUnderpass.edges,
+    ...GROUND_TRUTH_CHOKEPOINTS.hjBlockTunnel.edges,
+    ...GROUND_TRUTH_CHOKEPOINTS.prpMainTunnel.edges,
+  ])
+
+  const TUNNEL_PORTAL_CENTERS: [number, number][] = [
+    GROUND_TRUTH_CHOKEPOINTS.centralCanalUnderpass.center,
+    GROUND_TRUTH_CHOKEPOINTS.westCanalUnderpass.center,
+    GROUND_TRUTH_CHOKEPOINTS.hjBlockTunnel.center,
+    GROUND_TRUTH_CHOKEPOINTS.prpMainTunnel.center,
+  ]
+
+  function isCrossingTunnel(r: { edgeIndices?: number[]; coords?: [number, number][] } | null | undefined): boolean {
+    if (!r) return false
+    if (r.edgeIndices && r.edgeIndices.some((ei) => ALL_TUNNEL_EDGES.has(ei))) return true
+    if (r.coords && r.coords.length > 0) {
+      for (const [lon, lat] of r.coords) {
+        for (const [tLon, tLat] of TUNNEL_PORTAL_CENTERS) {
+          if (metresBetween(lat, lon, tLat, tLon) <= 30) return true
+        }
+      }
+    }
+    return false
+  }
 
   const badge = document.createElement('div')
   badge.id = 'route-badge'
@@ -430,11 +460,42 @@ async function start() {
     paintYou()
     const from = origin ?? campusCentreNode()
     const dState = disasterService.getState()
-    const safetyRes = router.routeDisasterAware(from, target, profile, {
+    const isHazardActive = dState.isHazardActive || dState.hazards.length > 0 || dState.blockedEdges.size > 0 || dState.mode !== 'normal'
+
+    let safetyRes = router.routeDisasterAware(from, target, profile, {
       hazards: dState.hazards,
       blockedEdges: dState.blockedEdges,
       riskMultipliers: dState.riskMultipliers,
     })
+
+    // Check whether the route crosses any tunnels
+    let routeCandidate = safetyRes?.safeRoute || safetyRes?.originalRoute
+    if (!routeCandidate || profile === 'bike') {
+      const footCheck = router.routeDisasterAware(from, target, 'foot', {
+        hazards: dState.hazards,
+        blockedEdges: dState.blockedEdges,
+        riskMultipliers: dState.riskMultipliers,
+      })
+      if (!routeCandidate) {
+        routeCandidate = footCheck?.safeRoute || footCheck?.originalRoute
+      } else if (footCheck?.safeRoute && isCrossingTunnel(footCheck.safeRoute)) {
+        routeCandidate = footCheck.safeRoute
+      }
+    }
+
+    const crossesTunnel = isCrossingTunnel(routeCandidate)
+    const disallowCycle = isHazardActive && crossesTunnel
+    lastDisallowCycle = disallowCycle
+
+    // When the options shift to hazard and the user is crossing any tunnels, don't allow cycle:
+    if (disallowCycle && profile === 'bike') {
+      profile = 'foot'
+      safetyRes = router.routeDisasterAware(from, target, 'foot', {
+        hazards: dState.hazards,
+        blockedEdges: dState.blockedEdges,
+        riskMultipliers: dState.riskMultipliers,
+      })
+    }
 
     const src = map.getSource('route') as maplibregl.GeoJSONSource | undefined
     const srcOrig = map.getSource('routeOrig') as maplibregl.GeoJSONSource | undefined
@@ -515,7 +576,7 @@ async function start() {
         <span>${humanDistance(r.metres)}</span>
         <span class="mode">
           <button data-mode="foot" class="${profile === 'foot' ? 'on' : ''}">walk</button>
-          <button data-mode="bike" class="${profile === 'bike' ? 'on' : ''}">cycle</button>
+          ${!disallowCycle ? `<button data-mode="bike" class="${profile === 'bike' ? 'on' : ''}">cycle</button>` : ''}
           ${canSwap ? `<button data-swap title="Swap start and destination">⇄</button>` : ''}
         </span>
         ${statusBadgeHtml}
@@ -525,6 +586,7 @@ async function start() {
       <div class="via">
         ${fromLabel}to ${escapeHtml(target.label)}${notes ? ` · ${notes}` : ''}
         ${safetyRes.status === 'HAZARD_AVOIDED' ? `<div class="reroute-note">⚠️ ${escapeHtml(safetyRes.explanation)}</div>` : ''}
+        ${disallowCycle ? `<div class="reroute-note tunnel-cycle-advisory">🚲 <strong>Cycle option disabled:</strong> Crossing railway underpass/tunnel during active flood hazard. Pedestrian walking mode only.</div>` : ''}
       </div>`
 
     if (fit) {
@@ -536,7 +598,12 @@ async function start() {
     const t = e.target as HTMLElement
     if (t.dataset.clear !== undefined) { clearRoute(); return }
     if (t.dataset.recalc !== undefined || t.closest('[data-recalc]')) { drawRoute(false); return }
-    if (t.dataset.mode) { profile = t.dataset.mode as Profile; drawRoute(false); return }
+    if (t.dataset.mode) {
+      if (t.dataset.mode === 'bike' && lastDisallowCycle) return
+      profile = t.dataset.mode as Profile
+      drawRoute(false)
+      return
+    }
     if (t.dataset.swap !== undefined && origin && target) {
       const prevOrig = origin
       const prevTgt = target
@@ -1057,6 +1124,52 @@ async function start() {
     transitionToView('dashboard')
     showDashboard('tunnels')
   })
+
+  // Interactive Quick Shortcuts for Normal Campus Users
+  document.querySelectorAll<HTMLElement>('.quick-pill').forEach((pill) => {
+    pill.addEventListener('click', () => {
+      const q = pill.dataset.quick
+      if (q === 'mess') {
+        transitionToView('map')
+        jumpMess()
+      } else if (q === 'academic') {
+        transitionToView('map')
+        jumpPrp()
+      } else if (q === 'rain') {
+        transitionToView('dashboard')
+        showDashboard('tunnels')
+      } else if (q === 'hostel') {
+        transitionToView('map')
+        openPalette('hostel')
+      } else if (q === 'gate') {
+        transitionToView('map')
+        openPalette('gate')
+      } else if (q === 'food') {
+        transitionToView('map')
+        openPalette('canteen')
+      }
+    })
+  })
+
+  // Vertical Quick Dock open / close toggle
+  const quickDock = document.getElementById('quick-categories-bar')
+  const quickToggle = document.getElementById('quick-dock-toggle')
+  if (quickDock && quickToggle) {
+    quickToggle.addEventListener('click', () => {
+      const isOpen = quickDock.classList.toggle('open')
+      quickDock.classList.toggle('collapsed', !isOpen)
+      quickToggle.setAttribute('aria-expanded', String(isOpen))
+    })
+  }
+
+  // Helpful dismissible guide tip
+  const guideWidget = document.getElementById('campus-guide-widget')
+  const guideClose = document.getElementById('guide-widget-close')
+  if (guideClose && guideWidget) {
+    guideClose.addEventListener('click', () => {
+      guideWidget.style.display = 'none'
+    })
+  }
 
   // Set default view mode to map under normal conditions
   setViewMode('map')

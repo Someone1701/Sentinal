@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initNavbarScroll()
   initLiveTelemetry()
   initGsapAnimations()
+  initIntro3DSurfing()
   initHeroParallax()
   initCommuteCardActions()
   initCursorTrail()
@@ -62,49 +63,36 @@ function initGsapAnimations() {
     .fromTo('.intro-tagline', { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6 }, '-=0.4')
     .fromTo('.intro-bottom-action', { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, '-=0.3')
 
-  // Pinned Cinematic Curtain & Zoom Intro Scrub
+  // Smooth Intro Transition — responsive and easy to scroll without viewport locking
   const introPinTl = gsap.timeline({
     scrollTrigger: {
       trigger: '#intro-screen',
       start: 'top top',
-      end: '+=110%',
-      pin: true,
-      pinSpacing: true,
-      scrub: 0.8,
-      anticipatePin: 1,
+      end: 'bottom top',
+      scrub: 0.5,
     },
   })
 
   introPinTl
-    .to('.intro-top-bar', { y: -40, opacity: 0, duration: 0.25 }, 0)
-    .to('.intro-bottom-action', { y: 40, opacity: 0, duration: 0.25 }, 0)
+    .to('.intro-top-bar', { y: -30, opacity: 0, duration: 0.3 }, 0)
+    .to('.intro-bottom-action', { y: 30, opacity: 0, duration: 0.3 }, 0)
     .to(
       '.intro-center-hero',
       {
-        scale: 3.2,
-        opacity: 0,
-        filter: 'blur(12px)',
-        duration: 0.85,
-        ease: 'power2.in',
+        y: -50,
+        opacity: 0.3,
+        duration: 0.8,
+        ease: 'power1.out',
       },
-      0.05
+      0
     )
     .to(
       '.intro-glow-aura',
       {
-        scale: 2.8,
-        opacity: 0.8,
+        opacity: 0.2,
         duration: 0.8,
       },
-      0.05
-    )
-    .to(
-      '#intro-screen',
-      {
-        opacity: 0,
-        duration: 0.35,
-      },
-      0.65
+      0
     )
 
   // Scroll to enter click handler
@@ -318,6 +306,173 @@ function initGsapAnimations() {
       }
     })
   }, 2500)
+}
+
+/* ── INTRO 3D TEXT & HERO SURFING ───────────────────────────────────────── */
+
+function initIntro3DSurfing() {
+  if (isReducedMotion()) return
+
+  const introScreen = document.getElementById('intro-screen')
+  const centerHero = document.querySelector<HTMLElement>('.intro-center-hero')
+  const emblem = document.querySelector<HTMLElement>('.intro-emblem')
+  const title = document.querySelector<HTMLElement>('.intro-title')
+  const chars = document.querySelectorAll<HTMLElement>('.surf-char')
+  const kicker = document.querySelector<HTMLElement>('.intro-kicker')
+  const tagline = document.querySelector<HTMLElement>('.intro-tagline')
+  const aura = document.querySelector<HTMLElement>('.intro-glow-aura')
+
+  if (!introScreen || !centerHero) return
+
+  // Track surfing motion across the intro viewport
+  introScreen.addEventListener('mousemove', (e: MouseEvent) => {
+    const rect = introScreen.getBoundingClientRect()
+    // Normalized coordinates from -1 to 1 relative to center
+    const nx = (e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2)
+    const ny = (e.clientY - (rect.top + rect.height / 2)) / (rect.height / 2)
+
+    // 1. Tilt entire hero in 3D perspective
+    gsap.to(centerHero, {
+      rotationY: nx * 22,
+      rotationX: -ny * 18,
+      transformPerspective: 1200,
+      duration: 0.45,
+      ease: 'power2.out',
+      overwrite: 'auto',
+    })
+
+    // 2. Parallax multi-plane offsets for true 3D spatial depth
+    if (emblem) {
+      gsap.to(emblem, {
+        x: nx * 30,
+        y: ny * 24,
+        z: 65,
+        rotationZ: nx * 8,
+        duration: 0.45,
+        ease: 'power2.out',
+        overwrite: 'auto',
+      })
+    }
+
+    if (kicker) {
+      gsap.to(kicker, {
+        x: nx * 18,
+        y: ny * 14,
+        z: 45,
+        duration: 0.45,
+        ease: 'power2.out',
+        overwrite: 'auto',
+      })
+    }
+
+    if (title) {
+      gsap.to(title, {
+        x: nx * 26,
+        y: ny * 20,
+        z: 90,
+        duration: 0.45,
+        ease: 'power2.out',
+        overwrite: 'auto',
+      })
+
+      // Dynamic reactive 3D cast-shadow
+      const shadowX = -nx * 22
+      const shadowY = -ny * 20
+      title.style.filter = `drop-shadow(${shadowX}px ${shadowY}px 26px rgba(34, 211, 238, 0.4)) drop-shadow(${shadowX * 1.5}px ${shadowY * 1.5}px 45px rgba(0, 0, 0, 0.7))`
+    }
+
+    if (tagline) {
+      gsap.to(tagline, {
+        x: nx * 14,
+        y: ny * 10,
+        z: 35,
+        duration: 0.45,
+        ease: 'power2.out',
+        overwrite: 'auto',
+      })
+    }
+
+    if (aura) {
+      // Inverted parallax for maximum depth illusion
+      gsap.to(aura, {
+        x: -nx * 50,
+        y: -ny * 40,
+        duration: 0.65,
+        ease: 'power2.out',
+        overwrite: 'auto',
+      })
+    }
+
+    // 3. Kinetic Letter Surfing: each letter ripples and elevates in 3D when cursor passes near it
+    chars.forEach((char) => {
+      const cRect = char.getBoundingClientRect()
+      const cx = cRect.left + cRect.width / 2
+      const cy = cRect.top + cRect.height / 2
+      const dist = Math.hypot(e.clientX - cx, e.clientY - cy)
+      const maxDist = 200
+
+      if (dist < maxDist) {
+        const factor = Math.pow(1 - dist / maxDist, 1.6)
+        const liftZ = factor * 70
+        const rotX = -((e.clientY - cy) / maxDist) * factor * 35
+        const rotY = ((e.clientX - cx) / maxDist) * factor * 35
+        const scale = 1 + factor * 0.2
+
+        char.classList.add('active-surf')
+        gsap.to(char, {
+          z: liftZ,
+          rotationX: rotX,
+          rotationY: rotY,
+          scale: scale,
+          duration: 0.2,
+          ease: 'power2.out',
+          overwrite: 'auto',
+        })
+      } else {
+        char.classList.remove('active-surf')
+        gsap.to(char, {
+          z: 0,
+          rotationX: 0,
+          rotationY: 0,
+          scale: 1,
+          duration: 0.55,
+          ease: 'power3.out',
+          overwrite: 'auto',
+        })
+      }
+    })
+  })
+
+  // Return to smooth resting state on mouse leave
+  introScreen.addEventListener('mouseleave', () => {
+    gsap.to(centerHero, {
+      rotationX: 0,
+      rotationY: 0,
+      duration: 1.2,
+      ease: 'elastic.out(1, 0.45)',
+    })
+
+    if (emblem) gsap.to(emblem, { x: 0, y: 0, z: 0, rotationZ: 0, duration: 1, ease: 'power2.out' })
+    if (kicker) gsap.to(kicker, { x: 0, y: 0, z: 0, duration: 1, ease: 'power2.out' })
+    if (title) {
+      gsap.to(title, { x: 0, y: 0, z: 0, duration: 1, ease: 'power2.out' })
+      title.style.filter = ''
+    }
+    if (tagline) gsap.to(tagline, { x: 0, y: 0, z: 0, duration: 1, ease: 'power2.out' })
+    if (aura) gsap.to(aura, { x: 0, y: 0, duration: 1, ease: 'power2.out' })
+
+    chars.forEach((char) => {
+      char.classList.remove('active-surf')
+      gsap.to(char, {
+        z: 0,
+        rotationX: 0,
+        rotationY: 0,
+        scale: 1,
+        duration: 0.7,
+        ease: 'elastic.out(1, 0.45)',
+      })
+    })
+  })
 }
 
 /* ── SUBTLE HERO 3D PARALLAX (DESKTOP) ─────────────────────────────────── */

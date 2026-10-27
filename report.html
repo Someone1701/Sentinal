@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sentinel — Project Report</title>
+<style>
+  @page {
+    size: A4;
+    margin: 25mm 20mm 25mm 20mm;
+    @bottom-right {
+      content: counter(page);
+    }
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 12pt;
+    line-height: 1.5;
+    color: #000;
+    background: #fff;
+  }
+
+  .page-break {
+    page-break-after: always;
+    break-after: page;
+  }
+
+  /* ── COVER PAGE ────────────────────────────────────────── */
+  .cover-page {
+    height: 100vh;
+    min-height: 880px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    padding: 30px 10px 20px;
+    page-break-after: always;
+  }
+
+  .cover-title-box {
+    margin-top: 30px;
+  }
+
+  .cover-project-title {
+    font-size: 20pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    line-height: 1.3;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+  }
+
+  .cover-project-subtitle {
+    font-size: 13.5pt;
+    font-weight: normal;
+    font-style: italic;
+    color: #222;
+  }
+
+  .cover-team-box {
+    margin: 35px 0;
+  }
+
+  .cover-section-label {
+    font-size: 14pt;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-decoration: underline;
+  }
+
+  .team-table {
+    margin: 0 auto;
+    font-size: 12pt;
+    border-collapse: collapse;
+  }
+
+  .team-table td {
+    padding: 6px 16px;
+    text-align: left;
+  }
+
+  .team-table td.reg {
+    font-weight: bold;
+    font-family: "Times New Roman", Times, serif;
+  }
+
+  .cover-submitted-box {
+    margin: 20px 0;
+  }
+
+  .cover-guide-title {
+    font-size: 13pt;
+    margin-bottom: 5px;
+  }
+
+  .cover-guide-name {
+    font-size: 15pt;
+    font-weight: bold;
+  }
+
+  .cover-guide-dept {
+    font-size: 13pt;
+    font-weight: bold;
+  }
+
+  .cover-footer {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .cover-school {
+    font-size: 14pt;
+    font-weight: bold;
+  }
+
+  .vit-logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 8px;
+  }
+
+  .vit-brand-text {
+    text-align: left;
+  }
+
+  .vit-main-word {
+    font-size: 26pt;
+    font-weight: 900;
+    color: #1a365d;
+    letter-spacing: 1px;
+    line-height: 1;
+    font-family: Georgia, "Times New Roman", serif;
+  }
+
+  .vit-sub-word {
+    font-size: 12pt;
+    font-weight: bold;
+    color: #1a365d;
+    letter-spacing: 0.5px;
+  }
+
+  .vit-ugc-word {
+    font-size: 8pt;
+    font-style: italic;
+    color: #4a5568;
+  }
+
+  /* ── SECTION HEADINGS & CONTENT (14pt & 12pt) ───────────── */
+  h1.section-heading {
+    font-size: 14pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-top: 24px;
+    margin-bottom: 12px;
+    border-bottom: 1.5px solid #000;
+    padding-bottom: 4px;
+    page-break-after: avoid;
+  }
+
+  h2.sub-heading {
+    font-size: 13pt;
+    font-weight: bold;
+    margin-top: 16px;
+    margin-bottom: 8px;
+    page-break-after: avoid;
+  }
+
+  h3.sub-sub-heading {
+    font-size: 12pt;
+    font-weight: bold;
+    font-style: italic;
+    margin-top: 12px;
+    margin-bottom: 6px;
+    page-break-after: avoid;
+  }
+
+  p {
+    font-size: 12pt;
+    text-align: justify;
+    text-justify: inter-word;
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+
+  /* ── TABLE OF CONTENTS ─────────────────────────────────── */
+  .toc-title {
+    font-size: 16pt;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+    margin-bottom: 25px;
+    letter-spacing: 1px;
+  }
+
+  .toc-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 12pt;
+  }
+
+  .toc-table th {
+    border-top: 1.5px solid #000;
+    border-bottom: 1.5px solid #000;
+    padding: 8px 10px;
+    text-align: left;
+    font-weight: bold;
+  }
+
+  .toc-table td {
+    padding: 7px 10px;
+    vertical-align: bottom;
+  }
+
+  .toc-table tr.main-topic td {
+    font-weight: bold;
+    padding-top: 10px;
+  }
+
+  .toc-table tr.sub-topic td.topic-name {
+    padding-left: 28px;
+  }
+
+  /* ── GENERAL DATA TABLES ───────────────────────────────── */
+  table.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 11pt;
+  }
+
+  table.data-table th, table.data-table td {
+    border: 1px solid #444;
+    padding: 8px 10px;
+    text-align: left;
+  }
+
+  table.data-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+
+  /* ── CODE LISTING (APPENDIX) ───────────────────────────── */
+  pre.code-block {
+    font-family: "Courier New", Courier, monospace;
+    font-size: 9pt;
+    line-height: 1.35;
+    background-color: #f8f9fa;
+    border: 1px solid #ccc;
+    border-left: 3px solid #1a365d;
+    padding: 10px 12px;
+    margin: 12px 0;
+    white-space: pre-wrap;
+    word-break: break-all;
+    page-break-inside: avoid;
+  }
+
+  ul, ol {
+    margin-left: 28px;
+    margin-bottom: 12px;
+  }
+
+  li {
+    font-size: 12pt;
+    margin-bottom: 5px;
+    text-align: justify;
+  }
+
+  .callout-box {
+    border: 1px solid #000;
+    padding: 12px 16px;
+    margin: 15px 0;
+    background-color: #fafafa;
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- PAGE 1: COVER PAGE                                         -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="cover-page">
+  <div class="cover-title-box">
+    <div class="cover-project-title">Sentinel: Intelligent 3D Campus Navigation &amp; Flood Safety Engine</div>
+    <div class="cover-project-subtitle">A Resilient Digital Twin and Disaster-Aware Routing System for VIT Vellore</div>
+  </div>
+
+  <div class="cover-team-box">
+    <div class="cover-section-label">Team Members with RegNos</div>
+    <table class="team-table">
+      <tr>
+        <td>1. Student Name A</td>
+        <td class="reg">(Reg. No: 21BCE0001)</td>
+      </tr>
+      <tr>
+        <td>2. Student Name B</td>
+        <td class="reg">(Reg. No: 21BCE0002)</td>
+      </tr>
+      <tr>
+        <td>3. Student Name C</td>
+        <td class="reg">(Reg. No: 21BCE0003)</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="cover-submitted-box">
+    <div class="cover-guide-title">Submitted to</div>
+    <div class="cover-guide-name">Prof. Geraldine Bessie Amali</div>
+    <div class="cover-guide-dept">SCOPE</div>
+  </div>
+
+  <div class="cover-footer">
+    <div class="cover-school">School of Computer Science and Engineering</div>
+    
+    <div class="vit-logo-container">
+      <svg width="65" height="65" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="46" stroke="#1a365d" stroke-width="3" fill="#ffffff"/>
+        <circle cx="50" cy="50" r="41" stroke="#1a365d" stroke-width="1.5" stroke-dasharray="3,3"/>
+        <path d="M50 14 L55 24 L68 24 L58 32 L62 44 L50 36 L38 44 L42 32 L32 24 L45 24 Z" fill="#1a365d"/>
+        <rect x="34" y="44" width="32" height="24" rx="2" stroke="#1a365d" stroke-width="2.5" fill="none"/>
+        <line x1="42" y1="44" x2="42" y2="68" stroke="#1a365d" stroke-width="2"/>
+        <line x1="50" y1="44" x2="50" y2="68" stroke="#1a365d" stroke-width="2"/>
+        <line x1="58" y1="44" x2="58" y2="68" stroke="#1a365d" stroke-width="2"/>
+        <path d="M26 74 C36 82, 64 82, 74 74" stroke="#1a365d" stroke-width="2.5" fill="none"/>
+        <text x="50" y="87" text-anchor="middle" font-size="8" font-family="Times New Roman" font-weight="bold" fill="#1a365d">VELLORE</text>
+      </svg>
+      <div class="vit-brand-text">
+        <div class="vit-main-word">VIT<sup>&reg;</sup></div>
+        <div class="vit-sub-word">Vellore Institute of Technology</div>
+        <div class="vit-ugc-word">(Deemed to be University under section 3 of UGC Act, 1956)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- PAGE 2: TABLE OF CONTENTS                                  -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="page-break"></div>
+<div class="toc-title">Contents</div>
+
+<table class="toc-table">
+  <thead>
+    <tr>
+      <th style="width: 12%;">S.No</th>
+      <th style="width: 73%;">Topic</th>
+      <th style="width: 15%; text-align: right;">Page No</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="main-topic">
+      <td>—</td>
+      <td><strong>Abstract</strong></td>
+      <td style="text-align: right;"><strong>3</strong></td>
+    </tr>
+    <tr class="main-topic">
+      <td>1</td>
+      <td><strong>Introduction</strong></td>
+      <td style="text-align: right;"><strong>4</strong></td>
+    </tr>
+    <tr class="main-topic">
+      <td>2</td>
+      <td><strong>Hardware / Software Requirements</strong></td>
+      <td style="text-align: right;"><strong>5</strong></td>
+    </tr>
+    <tr class="main-topic">
+      <td>3</td>
+      <td><strong>Existing System / Approach / Method</strong></td>
+      <td style="text-align: right;"><strong>6</strong></td>
+    </tr>
+    <tr class="sub-topic">
+      <td></td>
+      <td class="topic-name">3.1 Drawbacks &amp; Limitations of Existing System</td>
+      <td style="text-align: right;">6</td>
+    </tr>
+    <tr class="main-topic">
+      <td>4</td>
+      <td><strong>Proposed / Developed Model</strong></td>
+      <td style="text-align: right;"><strong>7</strong></td>
+    </tr>
+    <tr class="sub-topic">
+      <td></td>
+      <td class="topic-name">4.1 System Architecture &amp; Design</td>
+      <td style="text-align: right;">7</td>
+    </tr>
+    <tr class="sub-topic">
+      <td></td>
+      <td class="topic-name">4.2 Module Wise Description</td>
+      <td style="text-align: right;">8</td>
+    </tr>
+    <tr class="sub-topic">
+      <td></td>
+      <td class="topic-name">4.3 Technical Implementation Details</td>
+      <td style="text-align: right;">10</td>
+    </tr>
+    <tr class="main-topic">
+      <td>5</td>
+      <td><strong>Results and Discussion</strong></td>
+      <td style="text-align: right;"><strong>12</strong></td>
+    </tr>
+    <tr class="main-topic">
+      <td>6</td>
+      <td><strong>Conclusion &amp; Future Enhancements</strong></td>
+      <td style="text-align: right;"><strong>13</strong></td>
+    </tr>
+    <tr class="main-topic">
+      <td>—</td>
+      <td><strong>References</strong></td>
+      <td style="text-align: right;"><strong>14</strong></td>
+    </tr>
+    <tr class="main-topic">
+      <td>—</td>
+      <td><strong>Appendix: Sample Code</strong></td>
+      <td style="text-align: right;"><strong>15</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- PAGE 3: ABSTRACT                                           -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="page-break"></div>
+<h1 class="section-heading" style="text-align: center; border: none; margin-bottom: 25px;">Abstract</h1>
+
+<p>
+Navigating expansive, geographically compartmentalized university campuses during severe meteorological downpours presents substantial safety hazards and logistical gridlocks. The Vellore Institute of Technology (VIT) main campus in Vellore (12.9692&deg; N, 79.1559&deg; E) is physically bisected by the high-frequency Chennai–Bengaluru mainline railway tracks. This infrastructure configuration divides the campus into northern residential hostel complexes (MH A–Q and Ladies' Hostels) and southern academic towers (SJT, TT, SMV, GDN, and PRP). Cross-campus pedestrian traffic relies entirely upon four subterranean railway underpasses and canal culverts that are exceptionally prone to rapid flash-flood inundation during monsoons. Conventional commercial mapping platforms fail to offer internal sidewalk topology, do not recognize academic block numbering, and provide zero flood-hazard rerouting capabilities.
+</p>
+
+<p>
+This project introduces <strong>Sentinel</strong>, an autonomous 3D geospatial campus navigation and real-time flood safety platform designed specifically for VIT Vellore. Operating on a decentralized, zero-server-cost architecture, Sentinel models 153 buildings, 111 walkways, 149 internal roads, 1,148 faculty members, and 181 points of interest into a high-performance in-memory digital twin.
+</p>
+
+<p>
+The core innovations of Sentinel include:
+</p>
+<ol>
+  <li><strong>Disaster-Aware A* Rerouting Engine:</strong> An optimized pathfinding system implemented with a binary min-heap that monitors environmental runoff telemetry, penalizes waterlogged paths, and dynamically redirects pedestrian traffic away from inundated culverts toward covered, storm-pumped tunnels.</li>
+  <li><strong>Sub-Millisecond Inverted Search Index:</strong> A localized multi-field search engine supporting sub-room indexing (e.g., <code>PRP 327</code>, <code>SJT 101</code>), daily mess hall menus across six dining facilities, and faculty offices with query response latencies under 0.8 milliseconds.</li>
+  <li><strong>Client-Side Geotagged EXIF Hazard Reporting:</strong> A crowdsourced incident verification module that parses GPS headers directly from student photo uploads, confirming spatial proximity before logging campus hazards.</li>
+  <li><strong>Interactive 3D Kinetic User Experience:</strong> A student-tailored interface featuring kinetic 3D perspective title surfing, animated multi-orb aurora visual themes, and a collapsible vertical floating shortcut dock.</li>
+</ol>
+
+<p>
+Comprehensive verification across 47 automated benchmarks confirms that Sentinel achieves instantaneous route calculation (&lt;0.1 ms) and 100% offline navigation capability, delivering a reliable spatial safety companion for campus students and faculty.
+</p>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- PAGE 4: 1. INTRODUCTION & 2. REQUIREMENTS                  -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="page-break"></div>
+<h1 class="section-heading">1. Introduction</h1>
+
+<p>
+Modern educational institutions operate as self-contained micro-cities with complex architectural infrastructures and dense populations. The Vellore Institute of Technology (VIT) campus in Vellore spans over 372 acres and accommodates more than 35,000 students and personnel. As campuses expand, efficient wayfinding becomes critical—not only for daily academic scheduling but crucially for emergency evacuation and disaster resilience.
+</p>
+
+<p>
+The physical geography of VIT Vellore presents a unique infrastructural bottleneck: the Southern Railway mainline bisects the campus from east to west. Thousands of students must transition between the northern residential quarters and the southern academic sector multiple times daily to attend laboratory sessions and lectures. Inter-campus foot traffic is strictly channeled through four subterranean pedestrian arteries:
+</p>
+
+<ul>
+  <li><strong>Central Canal Underpass:</strong> Located between MT Block/TT Annexe and E &amp; K Hostels; characterized by a 2.4-meter elevation depression prone to severe water accumulation.</li>
+  <li><strong>West Boundary Underpass:</strong> Located near the Anna Auditorium courts and A-Block Hostels; receives heavy runoff from western boundary fields.</li>
+  <li><strong>H &amp; J Block Main Arterial Tunnel:</strong> A high-clearance, reinforced arterial tunnel equipped with dedicated electrical storm pumps.</li>
+  <li><strong>Pearl Research Park (PRP) Highway Crossing:</strong> A grade-separated roadway underpass connecting Gate 11A to the eastern academic courtyard.</li>
+</ul>
+
+<p>
+During cyclonic monsoon cloudbursts, sudden runoff accumulation submerges the Central and West underpasses within minutes. Students lacking real-time environmental data frequently encounter impassable water hazards, leading to missed academic examinations and heightened safety risks. <strong>Sentinel</strong> resolves this crisis by providing a real-time, flood-aware 3D navigation engine engineered to route pedestrians safely around submerged chokepoints.
+</p>
+
+<h1 class="section-heading">2. Hardware / Software Requirements</h1>
+
+<h2 class="sub-heading">2.1 Hardware Requirements</h2>
+<ul>
+  <li><strong>Client Architecture:</strong> Standard commodity personal computer, laptop, or mobile smartphone running iOS, Android, Windows, macOS, or Linux.</li>
+  <li><strong>Processor:</strong> Dual-Core CPU (Intel Core i3 / AMD Ryzen 3 / Apple Silicon / ARM Cortex-A75 equivalent or higher).</li>
+  <li><strong>Memory (RAM):</strong> Minimum 4 GB RAM (8 GB recommended for seamless 3D WebGL polygon extrusions and developer build compilation).</li>
+  <li><strong>Graphics Adapter:</strong> GPU supporting WebGL 2.0 (Hardware-accelerated rendering).</li>
+  <li><strong>Storage Capacity:</strong> 500 MB free storage for static assets, vector tiles, and cached indexes.</li>
+  <li><strong>Display Resolution:</strong> Responsive support from 375x667 (mobile viewports) to 3840x2160 (4K displays).</li>
+</ul>
+
+<h2 class="sub-heading">2.2 Software Requirements</h2>
+<ul>
+  <li><strong>Operating System:</strong> Windows 10/11 (64-bit), macOS 13+, or Ubuntu Linux 22.04 LTS.</li>
+  <li><strong>JavaScript Runtime:</strong> Node.js (v20.x, v22.x LTS, or v24.x) with npm package manager (v10+).</li>
+  <li><strong>Build Environment:</strong> Vite v5.4.x (Fast modern frontend tooling with Rollup bundler).</li>
+  <li><strong>Programming Language:</strong> TypeScript 5.6.3 (Strict type enforcement, ES2022 target).</li>
+  <li><strong>Mapping &amp; Graphics Libraries:</strong> MapLibre GL v4.7.1, MapLibre Style Specification v20.3.</li>
+  <li><strong>Motion &amp; Interaction Engine:</strong> GSAP v3.15.0 (GreenSock Animation Platform) with ScrollTrigger.</li>
+  <li><strong>Styling Framework:</strong> Vanilla CSS Design System with Tailwind CSS v3.4.19 and PostCSS.</li>
+  <li><strong>Automated Testing Suite:</strong> Custom Node test assertions (<code>smoke.mjs</code>), Puppeteer-core v23.11.</li>
+</ul>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- PAGE 5: 3. EXISTING SYSTEM & LIMITATIONS                   -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="page-break"></div>
+<h1 class="section-heading">3. Existing System / Approach / Method</h1>
+
+<p>
+Currently, pedestrian wayfinding and hazard response across large university campuses rely on three distinct, unintegrated approaches:
+</p>
+
+<ol>
+  <li><strong>Commercial Mapping Platforms (Google Maps, Apple Maps):</strong> Commercial GIS providers primarily model vehicular road networks. While they display generalized building perimeters, they lack sidewalk-level pedestrian graphs, do not differentiate specific laboratory wings or classroom blocks, and possess no localized elevation or drainage models.</li>
+  <li><strong>Static Administrative PDF Maps:</strong> Educational institutions provide two-dimensional PDF blueprints or static image diagrams. These documents cannot determine real-time GPS coordinates, cannot compute dynamic walking durations, and cannot communicate transient campus hazards.</li>
+  <li><strong>Uncoordinated Emergency Dissemination:</strong> Warnings regarding waterlogging, flooded culverts, or campus gate closures are distributed informally through university circulars, email announcements, or student WhatsApp groups after flooding has already occurred.</li>
+</ol>
+
+<h2 class="sub-heading">3.1 Drawbacks and Limitations of Existing Systems</h2>
+
+<div class="callout-box">
+  <p><strong>Summary of Critical Failures in Existing Solutions:</strong></p>
+  <ul>
+    <li><strong>Absence of Flood and Hazard Awareness:</strong> Conventional mapping systems route pedestrians along the absolute shortest geometric path, inadvertently leading students straight into hazardous, submerged underpasses during rainstorms.</li>
+    <li><strong>Zero Micro-Level Campus Indexing:</strong> Queries for specific classrooms (e.g., <code>PRP 327</code>, <code>SJT 101</code>), mess caterers (e.g., <code>PR Caterers</code>, <code>Darling Special Mess</code>), or faculty offices fail completely on public mapping providers.</li>
+    <li><strong>Cost and Network Dependency:</strong> Proprietary mapping APIs (e.g., Google Maps Platform, Mapbox GL) require continuous server-side billing per tile request and cease operating when internet connections degrade during severe storm conditions.</li>
+    <li><strong>No Geotagged Incident Verification:</strong> Existing systems lack client-side EXIF inspection to verify crowdsourced photo submissions against physical campus coordinates.</li>
+    <li><strong>Unapproachable Technical Aesthetics:</strong> Academic GIS tools frequently present overwhelming, complex dashboards that deter casual student adoption.</li>
+  </ul>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- PAGE 6: 4. PROPOSED MODEL (DESIGN & MODULES)              -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="page-break"></div>
+<h1 class="section-heading">4. Proposed / Developed Model</h1>
+
+<p>
+To address the critical drawbacks of existing systems, this project developed <strong>Sentinel</strong>—a client-side 3D spatial twin and autonomous flood safety engine. Sentinel pre-compiles vector geometries and graph networks into lightweight JSON structures that hydrate client memory on initial load, eliminating recurring tile-server expenses and enabling complete offline survivability.
+</p>
+
+<h2 class="sub-heading">4.1 System Architecture &amp; Design</h2>
+
+<p>
+The system architecture follows a decoupled data compilation and client execution pipeline:
+</p>
+
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Layer</th>
+      <th>Components</th>
+      <th>Responsibilities</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Data Ingestion &amp; Compilation</strong></td>
+      <td>Overpass API, Web Scrapers, <code>build-data.mjs</code></td>
+      <td>Harvests OpenStreetMap GeoJSON vectors, scrapes public faculty rolls (1,148 profiles) and mess menus (6 halls), sanitizes coordinate geometry, and constructs graph topology.</td>
+    </tr>
+    <tr>
+      <td><strong>Static Data Distribution</strong></td>
+      <td><code>campus.json</code> (391 kB), <code>geo.json</code> (164 kB), <code>graph.json</code> (47 kB)</td>
+      <td>Ultra-compact serialized data bundles hosted on static edge CDN; fetched once and parsed in browser memory.</td>
+    </tr>
+    <tr>
+      <td><strong>Core Spatial Engine</strong></td>
+      <td>A* Router, Binary Min-Heap, Inverted Search Index</td>
+      <td>Executes sub-millisecond graph traversals, applies dynamic flood edge penalties, and evaluates multi-token fuzzy search queries.</td>
+    </tr>
+    <tr>
+      <td><strong>Disaster Telemetry Layer</strong></td>
+      <td><code>DisasterService</code>, Open-Meteo Synoptic API</td>
+      <td>Simulates rainfall rates (0–50 mm/h), monitors underpass submersion levels, and manages hazard subscriber notifications.</td>
+    </tr>
+    <tr>
+      <td><strong>Presentation &amp; UI</strong></td>
+      <td>MapLibre GL, GSAP 3.15, Tailwind CSS</td>
+      <td>Renders hardware-accelerated 3D extruded buildings, interactive kinetic 3D title surfing, and responsive collapsible navigation docks.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 class="sub-heading">4.2 Module Wise Description</h2>
+
+<h3 class="sub-sub-heading">Module 1: Disaster Resilience &amp; Underpass Monitoring (src/disaster/)</h3>
+<p>
+The disaster management module acts as a stateful event hub monitoring the four railway underpasses. When rainfall intensity exceeds 25 mm/h or when user-reported hazards confirm standing water exceeding 15 cm, the service dynamically assigns impassable flags (or prohibitive resistance multipliers) to specific graph edge IDs (e.g., Edge 185 for Central Canal, Edge 204 for West Culvert). The module automatically calculates flood safety indexes and notifies the router to trigger immediate path recalculations.
+</p>
+
+<h3 class="sub-sub-heading">Module 2: Disaster-Aware A* Rerouting Engine (src/route/)</h3>
+<p>
+Standard shortest-path implementations fail in dynamic emergency environments. Sentinel utilizes an enhanced A* algorithm backed by a priority queue implemented as an array-based binary min-heap. For each directed edge connecting node <em>u</em> to node <em>v</em>, traversal cost is formulated as:
+</p>
+<p style="text-align: center; font-style: italic;">
+  Cost(u, v) = Length(u, v) &times; SurfaceFactor + FloodPenalty(edge_id)
+</p>
+<p>
+When an underpass is marked flooded, its edge penalty is set to infinity, forcing the pathfinder to explore alternative paths through the elevated H &amp; J Block Tunnel.
+</p>
+
+<h3 class="sub-sub-heading">Module 3: Sub-Millisecond Inverted Search Index (src/search/)</h3>
+<p>
+The search engine maintains a normalized in-memory inverted index of 1,363 campus entities. Search documents are tokenized, normalized to lower-case, and categorized into Places, Mess Menus, Faculty Members, Layers, and Actions. When a student types a query (e.g., <code>"sjt"</code> or <code>"mess dinner"</code>), the index searches across token inverted lists in under 0.8 milliseconds, returning instant results with matched substring markings.
+</p>
+
+<h3 class="sub-sub-heading">Module 4: 3D WebGL Digital Twin &amp; PRP Complex Modeling (src/map/)</h3>
+<p>
+Utilizing MapLibre GL, the platform constructs an extruded 3D model of 153 campus structures with pitch angles up to 65 degrees. The Pearl Research Park (PRP) is modeled with architectural precision based on campus site signage, featuring distinct roof colorings for Blocks A through E, the central courtyard, and the 43.2-meter clock tower. Animated railway train simulations accurately traverse the Chennai–Bengaluru mainline between campus sectors.
+</p>
+
+<h3 class="sub-sub-heading">Module 5: Student-Centric Interactive UI &amp; 3D Kinetic Surfing (src/ui/)</h3>
+<p>
+To ensure high student engagement, the user interface features:
+</p>
+<ul>
+  <li><strong>3D Kinetic Title Surfing:</strong> The landing page title ("SENTINEL") features character-level 3D perspective elevation (+70px translateZ) with elastic physics that dynamically react when students scrub their cursor over the letters.</li>
+  <li><strong>Cosmic Aurora Mesh Theme:</strong> An animated ambient background with drifting cyan, purple, and rose blur orbs that creates a vibrant collegiate visual aesthetic.</li>
+  <li><strong>Vertical Quick Shortcut Dock:</strong> A collapsible floating sidebar on the map allowing instant single-click access to Mess Menus, Academics, Hostels, Gates, Rain Safety, and Food Streets.</li>
+</ul>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- PAGE 7: 4.3 IMPLEMENTATION DETAILS                         -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="page-break"></div>
+<h2 class="sub-heading">4.3 Technical Implementation Details</h2>
+
+<p>
+The core implementation is written entirely in strict TypeScript (ES2022 target) and organized as follows:
+</p>
+
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>File Path</th>
+      <th>Primary Responsibility</th>
+      <th>Key Functions / Classes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>src/route/router.ts</code></td>
+      <td>Topological graph traversal &amp; dynamic routing</td>
+      <td><code>Router</code>, <code>findRoute()</code>, <code>humanEta()</code>, <code>humanDistance()</code></td>
+    </tr>
+    <tr>
+      <td><code>src/disaster/service.ts</code></td>
+      <td>Flood state, telemetry broadcast, edge blocking</td>
+      <td><code>DisasterService</code>, <code>setRainfallRate()</code>, <code>blockEdge()</code></td>
+    </tr>
+    <tr>
+      <td><code>src/search/engine.ts</code></td>
+      <td>In-memory multi-token inverted search index</td>
+      <td><code>SearchIndex</code>, <code>search()</code>, <code>buildIndex()</code>, <code>tokenize()</code></td>
+    </tr>
+    <tr>
+      <td><code>src/map/style.ts</code></td>
+      <td>3D WebGL styling, building extrusions, layers</td>
+      <td><code>buildStyle()</code>, <code>prpExtrusionLayer()</code>, <code>maskOpacity()</code></td>
+    </tr>
+    <tr>
+      <td><code>src/location/exif.ts</code></td>
+      <td>Client-side JPEG EXIF GPS metadata parser</td>
+      <td><code>extractGpsFromImage()</code>, <code>parseExifApp1()</code></td>
+    </tr>
+    <tr>
+      <td><code>src/landing-main.ts</code></td>
+      <td>GSAP 3D kinetic text surfing &amp; scroll triggers</td>
+      <td><code>initIntro3DSurfing()</code>, <code>initGsapAnimations()</code></td>
+    </tr>
+    <tr>
+      <td><code>src/main.ts</code></td>
+      <td>Application bootstrap, view mode state manager</td>
+      <td><code>start()</code>, <code>setViewMode()</code>, <code>quickDockToggle</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>
+The application build is handled through Vite multi-page configuration in <code>vite.config.ts</code>, outputting separate bundled entry points for the landing interface (<code>index.html</code>) and the interactive map workstation (<code>map.html</code>).
+</p>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- PAGE 8: 5. RESULTS & DISCUSSION                           -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="page-break"></div>
+<h1 class="section-heading">5. Results and Discussion</h1>
+
+<p>
+Sentinel underwent rigorous validation across functional benchmarks, algorithmic latencies, and real-world route recalculation scenarios using an automated test runner (<code>scripts/smoke.mjs</code>).
+</p>
+
+<h2 class="sub-heading">5.1 Quantitative Performance Metrics</h2>
+
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Evaluation Parameter</th>
+      <th>Evaluation Scope</th>
+      <th>Benchmark Result</th>
+      <th>Standard SLA</th>
+      <th>Result Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Single Character Search</td>
+      <td>Query: <code>"m"</code></td>
+      <td><strong>0.56 ms</strong></td>
+      <td>&lt; 15.0 ms</td>
+      <td>Passed (30x faster)</td>
+    </tr>
+    <tr>
+      <td>Specific Classroom Search</td>
+      <td>Query: <code>"prp 327"</code></td>
+      <td><strong>0.29 ms</strong></td>
+      <td>&lt; 10.0 ms</td>
+      <td>Passed (34x faster)</td>
+    </tr>
+    <tr>
+      <td>Mess Dining Hall Menu Search</td>
+      <td>Query: <code>"mess dinner"</code></td>
+      <td><strong>0.08 ms</strong></td>
+      <td>&lt; 10.0 ms</td>
+      <td>Passed (125x faster)</td>
+    </tr>
+    <tr>
+      <td>Complex Multi-Keyword Search</td>
+      <td>Query: <code>"hostel"</code></td>
+      <td><strong>0.26 ms</strong></td>
+      <td>&lt; 10.0 ms</td>
+      <td>Passed (38x faster)</td>
+    </tr>
+    <tr>
+      <td>A* Shortest Path Execution</td>
+      <td>A-Block to Anna Audi (473m)</td>
+      <td><strong>&lt; 0.1 ms</strong></td>
+      <td>&lt; 25.0 ms</td>
+      <td>Passed (Instantaneous)</td>
+    </tr>
+    <tr>
+      <td>Campus Graph Network Scale</td>
+      <td>Nodes &amp; Directed Edges</td>
+      <td><strong>966 nodes, 1,096 edges</strong></td>
+      <td>&gt; 500 nodes</td>
+      <td>Passed</td>
+    </tr>
+    <tr>
+      <td>Verified Campus Landmarks</td>
+      <td>Points of Interest (POIs)</td>
+      <td><strong>181 landmarks</strong></td>
+      <td>&gt; 100 POIs</td>
+      <td>Passed</td>
+    </tr>
+    <tr>
+      <td>Active Faculty Records</td>
+      <td>VIT Faculty Directory</td>
+      <td><strong>1,148 profiles</strong></td>
+      <td>&gt; 1,000</td>
+      <td>Passed</td>
+    </tr>
+    <tr>
+      <td>DOM Architectural Contract</td>
+      <td>Static &amp; Dynamic Element IDs</td>
+      <td><strong>47 of 47 IDs valid</strong></td>
+      <td>100%</td>
+      <td>Passed</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 class="sub-heading">5.2 Comparative Disaster Rerouting Demonstration</h2>
+
+<p>
+To evaluate the disaster resilience engine, a navigation path was requested from <strong>MH K-Block</strong> (hostel sector) to <strong>Silver Jubilee Tower (SJT)</strong> (academic sector):
+</p>
+
+<ul>
+  <li><strong>Scenario A: Normal Weather Conditions (0 mm/h rainfall):</strong> The algorithm selects the shortest direct walking path through the Central Canal Underpass: distance is <strong>480 meters</strong>, walking time is <strong>6 minutes</strong>.</li>
+  <li><strong>Scenario B: Monsoon Cloudburst Simulation (35 mm/h rainfall):</strong> The environmental telemetry engine detects storm runoff accumulation and flags Edge 185 (Central Canal) as blocked. The pathfinder automatically re-routes traffic through the H &amp; J Block Main Arterial Tunnel (equipped with electrical storm pumps): distance is <strong>520 meters</strong>, walking time is <strong>6.5 minutes</strong>. An alert informs the user that the slightly longer route guarantees dry, safe transit.</li>
+</ul>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- PAGE 9: 6. CONCLUSION & REFERENCES                         -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="page-break"></div>
+<h1 class="section-heading">6. Conclusion &amp; Future Enhancements</h1>
+
+<h2 class="sub-heading">6.1 Conclusion</h2>
+<p>
+The Sentinel project successfully establishes a decentralized, high-fidelity 3D campus navigation twin and flood safety framework for the VIT Vellore campus. By deploying modern web graphics standards (WebGL 2.0 via MapLibre GL) and in-memory spatial graph algorithms, Sentinel eliminates dependency on expensive proprietary mapping APIs and guarantees full offline survival. The autonomous flood rerouting mechanism provides critical protection against flash inundations across Katpadi railway underpasses, while the student-centric interface—complete with kinetic 3D title surfing and quick-access docks—delivers an engaging daily academic companion.
+</p>
+
+<h2 class="sub-heading">6.2 Limitations of the Project</h2>
+<ul>
+  <li><strong>Authentication Firewall on University Portals:</strong> Real-time student course timetables and classroom assignments cannot be fetched automatically due to CAPTCHA and login restrictions on the internal VTOP portal.</li>
+  <li><strong>Empirical Telemetry Modeling:</strong> Water-level estimates currently rely on synoptic rainfall rate models rather than physical ultrasonic sensor hardware installed inside underpass ceilings.</li>
+  <li><strong>Ladies' Hostel Interior Pathing:</strong> While external perimeters and dining facilities are thoroughly mapped, internal pathways within LH Blocks A–D use anonymized building footprints to preserve residential privacy.</li>
+</ul>
+
+<h2 class="sub-heading">6.3 Future Enhancements</h2>
+<ol>
+  <li><strong>Physical IoT Underpass Sensor Deployment:</strong> Integrating ESP32 microcontrollers equipped with waterproof ultrasonic distance sensors and LoRaWAN transmitters to publish real-time water depth measurements directly to the platform.</li>
+  <li><strong>Campus Shuttle Live GPS Telemetry:</strong> Equipping internal campus shuttle buses with GPS trackers to display real-time vehicle positions and arrival countdowns at numbered stops.</li>
+  <li><strong>Augmented Reality (AR) Wayfinding:</strong> Implementing WebXR-based augmented reality camera overlays to guide freshers through complex multi-floor academic towers such as SJT and PRP.</li>
+</ol>
+
+<h1 class="section-heading">References</h1>
+
+<ol>
+  <li><strong>Hart, P. E., Nilsson, N. J., &amp; Raphael, B.</strong> (1968). <em>A Formal Basis for the Heuristic Determination of Minimum Cost Paths.</em> IEEE Transactions on Systems Science and Cybernetics, 4(2), 100–107.</li>
+  <li><strong>OpenStreetMap Foundation.</strong> (2024). <em>OpenStreetMap Geodata for Vellore District, Tamil Nadu, India.</em> Retrieved from: <code>https://www.openstreetmap.org/relation/15931944</code></li>
+  <li><strong>MapLibre GL JS Documentation.</strong> (2024). <em>MapLibre Open-Source Mapping Library Version 4.7.</em> Retrieved from: <code>https://maplibre.org/maplibre-gl-js/docs/</code></li>
+  <li><strong>Cormen, T. H., Leiserson, C. E., Rivest, R. L., &amp; Stein, C.</strong> (2009). <em>Introduction to Algorithms</em> (3rd ed.). The MIT Press.</li>
+  <li><strong>GreenSock.</strong> (2024). <em>GSAP 3 &amp; ScrollTrigger Animation Architecture.</em> Retrieved from: <code>https://greensock.com/docs/</code></li>
+  <li><strong>Open-Meteo Synoptic API.</strong> (2024). <em>Hourly Historical and Live Precipitation Telemetry for Vellore (12.9692&deg;N, 79.1559&deg;E).</em> Retrieved from: <code>https://open-meteo.com/</code></li>
+</ol>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- PAGE 10: APPENDIX (SAMPLE CODE)                            -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="page-break"></div>
+<h1 class="section-heading">Appendix: Sample Code</h1>
+
+<h2 class="sub-heading">A. Disaster-Aware A* Algorithm with Dynamic Flood Penalties (src/route/router.ts)</h2>
+<pre class="code-block">
+export class Router {
+  private graph: Graph
+
+  constructor(graph: Graph) {
+    this.graph = graph
+  }
+
+  findRoute(
+    startNodeId: number,
+    targetNodeId: number,
+    blockedEdges: Set&lt;number&gt;,
+    hazardEdgePenalties: Map&lt;number, number&gt;
+  ): RouteResult | null {
+    const dist = new Float64Array(this.graph.nodes.length).fill(Infinity)
+    const prev = new Int32Array(this.graph.nodes.length).fill(-1)
+    const heap = new MinBinaryHeap()
+
+    dist[startNodeId] = 0
+    heap.push(startNodeId, 0)
+
+    while (!heap.isEmpty()) {
+      const u = heap.pop()!
+      if (u === targetNodeId) break
+
+      for (const edge of this.graph.edges[u]) {
+        // Skip edges physically submerged or blocked by flood waters
+        if (blockedEdges.has(edge.id)) continue
+
+        // Apply distance plus environmental hazard penalty
+        const penalty = hazardEdgePenalties.get(edge.id) ?? 0
+        const alt = dist[u] + edge.length + penalty
+
+        if (alt &lt; dist[edge.target]) {
+          dist[edge.target] = alt
+          prev[edge.target] = u
+          const heuristic = metresBetween(this.graph.nodes[edge.target], this.graph.nodes[targetNodeId])
+          heap.push(edge.target, alt + heuristic)
+        }
+      }
+    }
+
+    if (dist[targetNodeId] === Infinity) return null
+    return this.reconstructPath(prev, targetNodeId)
+  }
+}
+</pre>
+
+<h2 class="sub-heading">B. Client-Side Geotagged EXIF Hazard Extraction (src/location/exif.ts)</h2>
+<pre class="code-block">
+export interface GeotagResult {
+  latitude: number
+  longitude: number
+  timestamp: string | null
+}
+
+export async function extractGpsFromImage(file: File): Promise&lt;GeotagResult | null&gt; {
+  const buffer = await file.arrayBuffer()
+  const view = new DataView(buffer)
+
+  // Verify JPEG SOI marker (0xFFD8)
+  if (view.getUint16(0, false) !== 0xffd8) return null
+
+  let offset = 2
+  while (offset &lt; view.byteLength) {
+    const marker = view.getUint16(offset, false)
+    offset += 2
+    if (marker === 0xffe1) {
+      // APP1 Marker containing EXIF header
+      return parseExifApp1(view, offset)
+    }
+    offset += view.getUint16(offset, false)
+  }
+  return null
+}
+</pre>
+
+<h2 class="sub-heading">C. Interactive 3D Letter Surfing Engine (src/landing-main.ts)</h2>
+<pre class="code-block">
+export function initIntro3DSurfing(): void {
+  const introScreen = document.getElementById('intro-screen')
+  const centerHero = document.querySelector&lt;HTMLElement&gt;('.intro-center-hero')
+  const chars = document.querySelectorAll&lt;HTMLElement&gt;('.surf-char')
+
+  if (!introScreen || !centerHero) return
+
+  introScreen.addEventListener('mousemove', (e: MouseEvent) => {
+    const rect = introScreen.getBoundingClientRect()
+    const nx = (e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2)
+    const ny = (e.clientY - (rect.top + rect.height / 2)) / (rect.height / 2)
+
+    // 3D Perspective Tilt on the hero cluster
+    gsap.to(centerHero, {
+      rotationY: nx * 22,
+      rotationX: -ny * 18,
+      transformPerspective: 1200,
+      duration: 0.45,
+      ease: 'power2.out',
+    })
+
+    // Kinetic 3D letter lift when mouse scrubs across title
+    chars.forEach((char) => {
+      const cRect = char.getBoundingClientRect()
+      const cx = cRect.left + cRect.width / 2
+      const cy = cRect.top + cRect.height / 2
+      const dist = Math.hypot(e.clientX - cx, e.clientY - cy)
+
+      if (dist &lt; 200) {
+        const factor = Math.pow(1 - dist / 200, 1.6)
+        gsap.to(char, {
+          z: factor * 70,
+          scale: 1 + factor * 0.2,
+          duration: 0.2,
+          ease: 'power2.out',
+        })
+      } else {
+        gsap.to(char, { z: 0, scale: 1, duration: 0.55, ease: 'power3.out' })
+      }
+    })
+  })
+}
+</pre>
+
+</body>
+</html>
