@@ -1,6 +1,6 @@
 {
  "_source": "https://vit.ac.in/faculty",
- "_fetched": "2026-10-03T16:07:48.493Z",
+ "_fetched": "2026-11-01T23:47:53.851Z",
  "_note": "Public faculty listings on vit.ac.in school pages. One record per person; joint appointments keep every department. Completeness is whatever those pages publish, not a payroll count.",
  "_incomplete_departments": [],
  "items": [
@@ -213,15 +213,6 @@
   },
   {
    "name": "Dr. Gurukrishna K",
-   "title": "Faculty",
-   "dept": "SAS · physics",
-   "url": "https://vit.ac.in/school/allfaculty/sas/physics",
-   "depts": [
-    "SAS · physics"
-   ]
-  },
-  {
-   "name": "Dr. Juhi Dutta",
    "title": "Faculty",
    "dept": "SAS · physics",
    "url": "https://vit.ac.in/school/allfaculty/sas/physics",
@@ -1129,7 +1120,8 @@
    "dept": "SAS · chemistry",
    "url": "https://vit.ac.in/school/allfaculty/sas/chemistry",
    "depts": [
-    "SAS · chemistry"
+    "SAS · chemistry",
+    "SCORE · cyber security and intelligent systems"
    ]
   },
   {
@@ -3178,15 +3170,6 @@
   },
   {
    "name": "Dr. Yokesh Babu S",
-   "title": "Faculty",
-   "dept": "SCOPE · iot",
-   "url": "https://vit.ac.in/school/allfaculty/scope/iot",
-   "depts": [
-    "SCOPE · iot"
-   ]
-  },
-  {
-   "name": "Dr. Allam Jaya Prakash",
    "title": "Faculty",
    "dept": "SCOPE · iot",
    "url": "https://vit.ac.in/school/allfaculty/scope/iot",
@@ -6031,6 +6014,393 @@
    ]
   },
   {
+   "name": "Dr. Selva Rani B",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Brindha K",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Deepa M",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Iyapparaja M",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Gunasekaran G",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Lawanya Shri M",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Neelu Khare",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Parimala M",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Prasanna M",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Srinivasan P",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Srinivas Koppu",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Tapan Kumar Das",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Vijay Anand R",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Bhuvana.S",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Chandra Mouliswaran",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Charanya R",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Chemmalar Selvi G",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Jothish Kumar M",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Kumar P.J",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Malaserene I",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Muthamil Selvan T",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Nirmala M",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Nithya S",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Parvathi R",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Pradeepa M",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Rajkumar M",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Ramesh P S",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Thanga Mariappan L",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Vani M P",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Arun Pandian J",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Bharanidharan N",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Bhuvaneswari M.S",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Dhivya E",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Kavitha B.R",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Kumaresan P",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Mohanraj G",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Prof. Pavitra N",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Prof. Sabari Vasan S",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Sivashankari R",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Sumathi D",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Sureka S",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Susi A",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
+   "name": "Dr. Ushapreethi P",
+   "title": "Faculty",
+   "dept": "SCORE · cyber security and intelligent systems",
+   "url": "https://vit.ac.in/school/allfaculty/score/cyber-security-and-intelligent-systems",
+   "depts": [
+    "SCORE · cyber security and intelligent systems"
+   ]
+  },
+  {
    "name": "Dr. Agilandeeswari L",
    "title": "Faculty",
    "dept": "SCORE · softwaresystems engineering",
@@ -6727,15 +7097,6 @@
   },
   {
    "name": "Prof. Deepa P",
-   "title": "Faculty",
-   "dept": "SCORE · computer applications",
-   "url": "https://vit.ac.in/school/allfaculty/score/computer-applications",
-   "depts": [
-    "SCORE · computer applications"
-   ]
-  },
-  {
-   "name": "Dr. Chandra Segar T",
    "title": "Faculty",
    "dept": "SCORE · computer applications",
    "url": "https://vit.ac.in/school/allfaculty/score/computer-applications",
@@ -7806,6 +8167,15 @@
    ]
   },
   {
+   "name": "Dr. Monu Nath Baitha",
+   "title": "Faculty",
+   "dept": "SENSE · communication engineering",
+   "url": "https://vit.ac.in/school/allfaculty/sense/communication-engineering",
+   "depts": [
+    "SENSE · communication engineering"
+   ]
+  },
+  {
    "name": "Dr. Prabhu R",
    "title": "Faculty",
    "dept": "SENSE · communication engineering",
@@ -8565,15 +8935,6 @@
   },
   {
    "name": "Dr. Oyyaravelu R",
-   "title": "Faculty",
-   "dept": "SMEC · manufacturing engineering",
-   "url": "https://vit.ac.in/school/allfaculty/smec/manufacturing-engineering",
-   "depts": [
-    "SMEC · manufacturing engineering"
-   ]
-  },
-  {
-   "name": "Dr. Prince Kumar Rai",
    "title": "Faculty",
    "dept": "SMEC · manufacturing engineering",
    "url": "https://vit.ac.in/school/allfaculty/smec/manufacturing-engineering",
